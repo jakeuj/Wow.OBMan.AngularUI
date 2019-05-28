@@ -1,0 +1,136 @@
+<form autocomplete="off" #editUserModal="ngForm" (ngSubmit)="save()">
+    <h1 mat-dialog-title>{{ "EditActivity" | localize }}</h1>
+    <mat-dialog-content style="width:800px;height:250px;">
+        <mat-tab-group>
+            <mat-tab [label]="'ActivityDetails' | localize">
+                <br />
+                <div class="row-fluid">
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="Message"
+                                    [placeholder]="'ActivityMessage' | localize"
+                                    [(ngModel)]="activity.message"
+                                    required
+                                    minlength="2"
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="GoToType"
+                                    [placeholder]="'GoToType' | localize"
+                                    [(ngModel)]="activity.goToType"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="GoTo"
+                                    [placeholder]="'GoTo' | localize"
+                                    [(ngModel)]="activity.goTo"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="LeftTag"
+                                    [placeholder]="'LeftTag' | localize"
+                                    [(ngModel)]="activity.leftTag"
+                                    type="number"
+                                    required
+                                    maxlength="256"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="RightTag"
+                                    [placeholder]="'RightTag' | localize"
+                                    [(ngModel)]="activity.rightTag"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="Type"
+                                    [placeholder]="'ActivityType' | localize"
+                                    [(ngModel)]="activity.type"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'ActivityTime' | localize">
+                <br />
+                <div class="row-fluid">
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="StartTime"
+                                    [placeholder]="'StartTime' | localize"
+                                    [(ngModel)]="activity.startTime"
+                                    type="datetime-local"
+                                    required
+                                    minlength="2"
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="EndTime"
+                                    [placeholder]="'EndTime' | localize"
+                                    [(ngModel)]="activity.endTime"
+                                    type="datetime-local"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <div class="checkbox-wrapper">
+                            <i class="material-icons" style="color:green;" *ngIf="activity.endTime>activity.startTime; else elseTmpl">
+                                check_box
+                            </i>
+                            <ng-template #elseTmpl>
+                                <i class="material-icons"  style="color:red;">
+                                    indeterminate_check_box
+                                </i>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button
+                mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!editUserModal.form.valid || saving"
+        >
+            {{ "Save" | localize }}
+        </button>
+    </div>
+</form>

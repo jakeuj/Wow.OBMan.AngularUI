@@ -45,7 +45,7 @@
 
     /* Left Sidebar - Function =================================================================================================
     *  You can manage the left sidebar menu options
-    *  
+    *
     */
     $.AdminBSB.leftSideBar = {
         activate: function () {
@@ -111,7 +111,7 @@
         setMenuHeight: function (isFirstTime) {
             if (typeof $.fn.slimScroll != 'undefined') {
                 var configs = $.AdminBSB.options.leftSideBar;
-                var height = ($(window).height() - ($('.legal').outerHeight() + $('.user-info').outerHeight() + $('.navbar').innerHeight()));
+                var height = ($(window).height() - ($('.legal').outerHeight() + $('.activity-info').outerHeight() + $('.navbar').innerHeight()));
                 var $el = $('.list');
 
                 $el.slimscroll({
@@ -161,7 +161,7 @@
 
     /* Right Sidebar - Function ================================================================================================
     *  You can manage the right sidebar menu options
-    *  
+    *
     */
     $.AdminBSB.rightSideBar = {
         activate: function () {
@@ -193,7 +193,7 @@
 
     /* Searchbar - Function ================================================================================================
     *  You can manage the search bar
-    *  
+    *
     */
     $.AdminBSB.search = {
         activate: function () {
@@ -233,7 +233,7 @@
 
     /* Navbar - Function =======================================================================================================
     *  You can manage the navbar
-    *  
+    *
     */
     $.AdminBSB.navbar = {
         activate: function () {
@@ -264,7 +264,7 @@
 
     /* Browser - Function ======================================================================================================
     *  You can manage browser
-    *  
+    *
     */
     var edge = 'Microsoft Edge';
     var ie10 = 'Internet Explorer 10';

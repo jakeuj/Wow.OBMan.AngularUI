@@ -140,6 +140,294 @@ export class AccountServiceProxy {
 }
 
 @Injectable()
+export class ActivityServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<ActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<ActivityDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDto>(<any>null);
+    }
+
+    /**
+     * @param type (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(type: Type | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/GetAll?";
+        if (type !== undefined)
+            url_ += "Type=" + encodeURIComponent("" + type) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfActivityDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfActivityDto.fromJS(resultData200) : new PagedResultDtoOfActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfActivityDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: CreateActivityDto | null | undefined): Observable<ActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<ActivityDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: ActivityDto | null | undefined): Observable<ActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<ActivityDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
 export class ConfigurationServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -1885,6 +2173,215 @@ export interface IRegisterOutput {
     canLogin: boolean | undefined;
 }
 
+export class ActivityDto implements IActivityDto {
+    message: string | undefined;
+    goToType: number | undefined;
+    goTo: number | undefined;
+    leftTag: ActivityDtoLeftTag | undefined;
+    rightTag: ActivityDtoRightTag | undefined;
+    type: ActivityDtoType | undefined;
+    isDeleted: boolean | undefined;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+
+    constructor(data?: IActivityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.message = data["message"];
+            this.goToType = data["goToType"];
+            this.goTo = data["goTo"];
+            this.leftTag = data["leftTag"];
+            this.rightTag = data["rightTag"];
+            this.type = data["type"];
+            this.isDeleted = data["isDeleted"];
+            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
+            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ActivityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message;
+        data["goToType"] = this.goToType;
+        data["goTo"] = this.goTo;
+        data["leftTag"] = this.leftTag;
+        data["rightTag"] = this.rightTag;
+        data["type"] = this.type;
+        data["isDeleted"] = this.isDeleted;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ActivityDto {
+        const json = this.toJSON();
+        let result = new ActivityDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityDto {
+    message: string | undefined;
+    goToType: number | undefined;
+    goTo: number | undefined;
+    leftTag: ActivityDtoLeftTag | undefined;
+    rightTag: ActivityDtoRightTag | undefined;
+    type: ActivityDtoType | undefined;
+    isDeleted: boolean | undefined;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfActivityDto implements IPagedResultDtoOfActivityDto {
+    totalCount: number | undefined;
+    items: ActivityDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfActivityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [];
+                for (let item of data["items"])
+                    this.items.push(ActivityDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfActivityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfActivityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfActivityDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfActivityDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfActivityDto {
+    totalCount: number | undefined;
+    items: ActivityDto[] | undefined;
+}
+
+export class CreateActivityDto implements ICreateActivityDto {
+    message: string | undefined;
+    goToType: number | undefined;
+    goTo: number | undefined;
+    leftTag: CreateActivityDtoLeftTag | undefined;
+    rightTag: CreateActivityDtoRightTag | undefined;
+    type: CreateActivityDtoType | undefined;
+    startTime: moment.Moment;
+    endTime: moment.Moment;
+
+    constructor(data?: ICreateActivityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.message = data["message"];
+            this.goToType = data["goToType"];
+            this.goTo = data["goTo"];
+            this.leftTag = data["leftTag"];
+            this.rightTag = data["rightTag"];
+            this.type = data["type"];
+            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
+            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateActivityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateActivityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message;
+        data["goToType"] = this.goToType;
+        data["goTo"] = this.goTo;
+        data["leftTag"] = this.leftTag;
+        data["rightTag"] = this.rightTag;
+        data["type"] = this.type;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateActivityDto {
+        const json = this.toJSON();
+        let result = new CreateActivityDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateActivityDto {
+    message: string | undefined;
+    goToType: number | undefined;
+    goTo: number | undefined;
+    leftTag: CreateActivityDtoLeftTag | undefined;
+    rightTag: CreateActivityDtoRightTag | undefined;
+    type: CreateActivityDtoType | undefined;
+    startTime: moment.Moment;
+    endTime: moment.Moment;
+}
+
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
     theme: string;
 
@@ -1933,7 +2430,6 @@ export class CreateRoleDto implements ICreateRoleDto {
     displayName: string;
     normalizedName: string | undefined;
     description: string | undefined;
-    isStatic: boolean | undefined;
     permissions: string[] | undefined;
 
     constructor(data?: ICreateRoleDto) {
@@ -1951,7 +2447,6 @@ export class CreateRoleDto implements ICreateRoleDto {
             this.displayName = data["displayName"];
             this.normalizedName = data["normalizedName"];
             this.description = data["description"];
-            this.isStatic = data["isStatic"];
             if (data["permissions"] && data["permissions"].constructor === Array) {
                 this.permissions = [];
                 for (let item of data["permissions"])
@@ -1973,7 +2468,6 @@ export class CreateRoleDto implements ICreateRoleDto {
         data["displayName"] = this.displayName;
         data["normalizedName"] = this.normalizedName;
         data["description"] = this.description;
-        data["isStatic"] = this.isStatic;
         if (this.permissions && this.permissions.constructor === Array) {
             data["permissions"] = [];
             for (let item of this.permissions)
@@ -1995,7 +2489,6 @@ export interface ICreateRoleDto {
     displayName: string;
     normalizedName: string | undefined;
     description: string | undefined;
-    isStatic: boolean | undefined;
     permissions: string[] | undefined;
 }
 
@@ -2004,7 +2497,6 @@ export class RoleDto implements IRoleDto {
     displayName: string;
     normalizedName: string | undefined;
     description: string | undefined;
-    isStatic: boolean | undefined;
     permissions: string[] | undefined;
     id: number | undefined;
 
@@ -2023,7 +2515,6 @@ export class RoleDto implements IRoleDto {
             this.displayName = data["displayName"];
             this.normalizedName = data["normalizedName"];
             this.description = data["description"];
-            this.isStatic = data["isStatic"];
             if (data["permissions"] && data["permissions"].constructor === Array) {
                 this.permissions = [];
                 for (let item of data["permissions"])
@@ -2046,7 +2537,6 @@ export class RoleDto implements IRoleDto {
         data["displayName"] = this.displayName;
         data["normalizedName"] = this.normalizedName;
         data["description"] = this.description;
-        data["isStatic"] = this.isStatic;
         if (this.permissions && this.permissions.constructor === Array) {
             data["permissions"] = [];
             for (let item of this.permissions)
@@ -2069,7 +2559,6 @@ export interface IRoleDto {
     displayName: string;
     normalizedName: string | undefined;
     description: string | undefined;
-    isStatic: boolean | undefined;
     permissions: string[] | undefined;
     id: number | undefined;
 }
@@ -3587,10 +4076,61 @@ export interface IPagedResultDtoOfUserDto {
     items: UserDto[] | undefined;
 }
 
+export enum Type {
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
+    _4 = 4, 
+}
+
 export enum IsTenantAvailableOutputState {
     _1 = 1, 
     _2 = 2, 
     _3 = 3, 
+}
+
+export enum ActivityDtoLeftTag {
+    _0 = 0, 
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
+    _4 = 4, 
+    _5 = 5, 
+}
+
+export enum ActivityDtoRightTag {
+    _0 = 0, 
+    _1 = 1, 
+    _2 = 2, 
+}
+
+export enum ActivityDtoType {
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
+    _4 = 4, 
+}
+
+export enum CreateActivityDtoLeftTag {
+    _0 = 0, 
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
+    _4 = 4, 
+    _5 = 5, 
+}
+
+export enum CreateActivityDtoRightTag {
+    _0 = 0, 
+    _1 = 1, 
+    _2 = 2, 
+}
+
+export enum CreateActivityDtoType {
+    _1 = 1, 
+    _2 = 2, 
+    _3 = 3, 
+    _4 = 4, 
 }
 
 export class SwaggerException extends Error {
