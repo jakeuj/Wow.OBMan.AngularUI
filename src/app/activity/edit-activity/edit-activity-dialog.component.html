@@ -81,17 +81,34 @@
                 <br />
                 <div class="row-fluid">
                     <div class="col-md-6">
+                        <!--
                         <mat-form-field>
-                            <input
-                                    matInput
-                                    name="StartTime"
-                                    [placeholder]="'StartTime' | localize"
-                                    [(ngModel)]="activity.startTime"
-                                    type="datetime-local"
-                                    required
-                                    minlength="2"
-                                    maxlength="32"
+                            <input matInput
+                                   name="StartTime"
+                                   [placeholder]="'StartTime' | localize"
+                                   [(ngModel)]="dateTimeRange"
+                                   [selectMode]="'range'"
+                                   [owlDateTime]="dt1"
+                                   [owlDateTimeTrigger]="dt1"
+                                   #dateTime1="ngModel"
+                                   required
                             />
+                            <owl-date-time #dt1></owl-date-time>
+                            <span class="example-error" *ngIf="dateTime1.invalid && dateTime1.errors.owlDateTimeRange">
+                                Date Time Range Invalid.
+                            </span>
+                        </mat-form-field>
+                        -->
+                        <mat-form-field>
+                            <input matInput
+                                   name="StartTime"
+                                   [placeholder]="'StartTime' | localize"
+                                   [(ngModel)]="activity.startTime"
+                                   [owlDateTime]="dt1"
+                                   [owlDateTimeTrigger]="dt1"
+                                   required
+                            />
+                            <owl-date-time #dt1></owl-date-time>
                         </mat-form-field>
                         <mat-form-field>
                             <input
@@ -99,20 +116,24 @@
                                     name="EndTime"
                                     [placeholder]="'EndTime' | localize"
                                     [(ngModel)]="activity.endTime"
-                                    type="datetime-local"
+                                    [owlDateTime]="dt2"
+                                    [owlDateTimeTrigger]="dt2"
                                     required
-                                    maxlength="32"
                             />
+                            <owl-date-time #dt2></owl-date-time>
                         </mat-form-field>
                         <div class="checkbox-wrapper">
-                            <i class="material-icons" style="color:green;" *ngIf="activity.endTime>activity.startTime; else elseTmpl">
-                                check_box
-                            </i>
+                            <ng-container *ngIf="activity.startTime<activity.endTime; else elseTmpl">
+                                <i class="material-icons" style="color:green;">
+                                    check_box
+                                </i>
+                            </ng-container>
                             <ng-template #elseTmpl>
                                 <i class="material-icons"  style="color:red;">
                                     indeterminate_check_box
                                 </i>
                             </ng-template>
+                            <span>{{ "IsActive" | localize }}</span>
                         </div>
                     </div>
                 </div>
