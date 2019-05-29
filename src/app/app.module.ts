@@ -37,11 +37,14 @@ import { CreateUserDialogComponent } from '@app/users/create-user/create-user-di
 import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.component';
 import { ChangePasswordComponent } from './users/change-password/change-password.component';
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
-import { ActivityComponent } from './activity/activity.component';
-import { EditActivityDialogComponent } from './activity/edit-activity/edit-activity-dialog.component';
 // Angular Date Time Picker
 import { OwlDateTimeModule, OWL_DATE_TIME_FORMATS } from 'ng-pick-datetime';
 import { OwlMomentDateTimeModule } from 'ng-pick-datetime-moment';
+// Activities
+import { ActivityComponent } from './activity/activity.component';
+import { EditActivityDialogComponent } from './activity/edit-activity/edit-activity-dialog.component';
+import { CreateActivityDialogComponent } from './activity/create-activity/create-activity-dialog.component';
+import { ActivityEnumsPipe } from './activity/activity-enums.pipe';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -80,8 +83,11 @@ export const MY_MOMENT_FORMATS = {
     EditUserDialogComponent,
     ChangePasswordComponent,
     ResetPasswordDialogComponent,
+      // Activities
     ActivityComponent,
-    EditActivityDialogComponent
+    EditActivityDialogComponent,
+    ActivityEnumsPipe,
+    CreateActivityDialogComponent
   ],
   imports: [
     CommonModule,
@@ -115,7 +121,8 @@ export const MY_MOMENT_FORMATS = {
     EditUserDialogComponent,
     ResetPasswordDialogComponent,
     //activity
-    EditActivityDialogComponent
+    EditActivityDialogComponent,
+      CreateActivityDialogComponent
   ]
 })
 export class AppModule {}

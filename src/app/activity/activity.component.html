@@ -66,7 +66,7 @@
                       })
               ">
                         <td>{{ activity.id }}</td>
-                        <td>{{ activity.type }}</td>
+                        <td>{{ activity.type | activityEnums | localize}}</td>
                         <td>{{ activity.startTime | date:'yyyy-MM-dd HH:mm:ss' }} - {{ activity.endTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                         <td align="center">
                             <i class="material-icons" *ngIf="activity.endTime>activity.startTime" style="color:green;">

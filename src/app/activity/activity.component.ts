@@ -4,9 +4,8 @@ import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
 import { ActivityServiceProxy, ActivityDto, PagedResultDtoOfActivityDto } from '@shared/service-proxies/service-proxies';
-import {ResetPasswordDialogComponent} from "@app/users/reset-password/reset-password.component";
-import {CreateUserDialogComponent} from "@app/users/create-user/create-user-dialog.component";
 import {EditActivityDialogComponent} from "./edit-activity/edit-activity-dialog.component";
+import {CreateActivityDialogComponent} from "@app/activity/create-activity/create-activity-dialog.component";
 
 class PagedActivityRequestDto extends PagedRequestDto {
     type: number;
@@ -31,15 +30,11 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     }
 
     createActivity(): void {
-        this.showCreateOrEditUserDialog();
+        this.showCreateOrEditActivitDialog();
     }
 
     editActivity(activity: ActivityDto): void {
-        this.showCreateOrEditUserDialog(activity.id);
-    }
-
-    public resetPassword(activity: ActivityDto): void {
-        this.showResetPasswordUserDialog(activity.id);
+        this.showCreateOrEditActivitDialog(activity.id);
     }
 
     protected list(
@@ -77,23 +72,17 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         );
     }
 
-    private showResetPasswordUserDialog(activityId?: number): void {
-        this._dialog.open(ResetPasswordDialogComponent, {
-            data: activityId
-        });
-    }
-
-    private showCreateOrEditUserDialog(id?: number): void {
-        let createOrEditUserDialog;
+    private showCreateOrEditActivitDialog(id?: number): void {
+        let createOrEditActivitDialog;
         if (id === undefined || id <= 0) {
-            createOrEditUserDialog = this._dialog.open(CreateUserDialogComponent);
+            createOrEditActivitDialog = this._dialog.open(CreateActivityDialogComponent);
         } else {
-            createOrEditUserDialog = this._dialog.open(EditActivityDialogComponent, {
+            createOrEditActivitDialog = this._dialog.open(EditActivityDialogComponent, {
                 data: id
             });
         }
 
-        createOrEditUserDialog.afterClosed().subscribe(result => {
+        createOrEditActivitDialog.afterClosed().subscribe(result => {
             if (result) {
                 this.refresh();
             }
