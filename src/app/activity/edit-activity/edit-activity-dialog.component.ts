@@ -1,10 +1,8 @@
 import { Component, Injector, Optional, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA,MatDialogRef,MatCheckboxChange } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { finalize } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
-import {ActivityServiceProxy,ActivityDto} from '@shared/service-proxies/service-proxies';
-import {Moment} from "@node_modules/moment";
+import { ActivityServiceProxy, ActivityDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-edit-activity',
@@ -14,7 +12,6 @@ import {Moment} from "@node_modules/moment";
 export class EditActivityDialogComponent extends AppComponentBase implements OnInit {
     saving = false;
     activity: ActivityDto = new ActivityDto();
-    //public dateTimeRange: Moment[] = [];
 
     constructor(
         injector: Injector,
@@ -28,7 +25,6 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
     ngOnInit(): void {
         this._activityService.get(this._id).subscribe(result => {
             this.activity = result;
-            //this.dateTimeRange = [this.activity.startTime,this.activity.endTime];
         });
     }
 

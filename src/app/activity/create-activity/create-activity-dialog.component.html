@@ -2,29 +2,26 @@
     <h1 mat-dialog-title>{{ "CreateNewUser" | localize }}</h1>
     <mat-dialog-content style="width:800px;height:300px;">
         <mat-tab-group>
-            <mat-tab [label]="'ActivityTexts' | localize">
-                <br />
-                <div class="row-fluid">
-                    <div class="col-md-12">
-                        <mat-form-field>
-                            <textarea
-                                    matInput
-                                    name="ActivityMessage"
-                                    [placeholder]="'ActivityMessage' | localize"
-                                    [(ngModel)]="activity.message"
-                                    rows="10"
-                                    required
-                                    minlength="2"
-                                    maxlength="512"
-                            ></textarea>
-                        </mat-form-field>
-                    </div>
-                </div>
-            </mat-tab>
             <mat-tab [label]="'ActivityDetails' | localize">
                 <br />
                 <div class="row-fluid">
                     <div class="col-md-6">
+                        <mat-form-field>
+                            <input matInput
+                                   name="ActivityTime"
+                                   [placeholder]="'ActivityTime' | localize"
+                                   [(ngModel)]="dateTimeRange"
+                                   [selectMode]="'range'"
+                                   [owlDateTime]="dt1"
+                                   [owlDateTimeTrigger]="dt1"
+                                   #dateTime1="ngModel"
+                                   required
+                            />
+                            <owl-date-time #dt1></owl-date-time>
+                            <span class="example-error" *ngIf="dateTime1.invalid && dateTime1.errors.owlDateTimeRange">
+                                Date Time Range Invalid.
+                            </span>
+                        </mat-form-field>
                         <mat-form-field>
                             <input
                                     matInput
@@ -47,30 +44,8 @@
                                     maxlength="32"
                             />
                         </mat-form-field>
-                        <mat-form-field>
-                            <input
-                                    matInput
-                                    name="LeftTag"
-                                    [placeholder]="'LeftTag' | localize"
-                                    [(ngModel)]="activity.leftTag"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
-                        </mat-form-field>
                     </div>
                     <div class="col-md-6">
-                        <mat-form-field>
-                            <input
-                                    matInput
-                                    name="RightTag"
-                                    [placeholder]="'RightTag' | localize"
-                                    [(ngModel)]="activity.rightTag"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
-                        </mat-form-field>
                         <mat-form-field>
                             <input
                                     matInput
@@ -82,23 +57,46 @@
                                     maxlength="32"
                             />
                         </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="LeftTag"
+                                    [placeholder]="'LeftTag' | localize"
+                                    [(ngModel)]="activity.leftTag"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="RightTag"
+                                    [placeholder]="'RightTag' | localize"
+                                    [(ngModel)]="activity.rightTag"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
                     </div>
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'ActivityTexts' | localize">
+                <br />
+                <div class="row-fluid">
                     <div class="col-md-12">
                         <mat-form-field>
-                            <input matInput
-                                   name="StartTime"
-                                   [placeholder]="'StartTime' | localize"
-                                   [(ngModel)]="dateTimeRange"
-                                   [selectMode]="'range'"
-                                   [owlDateTime]="dt1"
-                                   [owlDateTimeTrigger]="dt1"
-                                   #dateTime1="ngModel"
-                                   required
-                            />
-                            <owl-date-time #dt1></owl-date-time>
-                            <span class="example-error" *ngIf="dateTime1.invalid && dateTime1.errors.owlDateTimeRange">
-                                Date Time Range Invalid.
-                            </span>
+                            <textarea
+                                    matInput
+                                    name="ActivityMessage"
+                                    [placeholder]="'ActivityMessage' | localize"
+                                    [(ngModel)]="activity.message"
+                                    rows="10"
+                                    required
+                                    minlength="2"
+                                    maxlength="512"
+                            ></textarea>
                         </mat-form-field>
                     </div>
                 </div>
