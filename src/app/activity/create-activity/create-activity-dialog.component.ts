@@ -21,7 +21,8 @@ export class CreateActivityDialogComponent extends AppComponentBase
     activityTypes = ActivityDtoType;
     activityLeftTags = ActivityDtoLeftTag;
     activityRightTags = ActivityDtoRightTag;
-
+    activityTitle: string;
+    activityMessage: string;
 
     constructor(
         injector: Injector,
@@ -43,8 +44,6 @@ export class CreateActivityDialogComponent extends AppComponentBase
 
         this.activity.leftTag = 0;
         this.activity.rightTag = 0;
-
-        this.activity.message="<t>Title,<p>Context";
     }
 
     save(): void {
@@ -52,6 +51,8 @@ export class CreateActivityDialogComponent extends AppComponentBase
 
         this.activity.startTime=this.dateTimeRange[0];
         this.activity.endTime=this.dateTimeRange[1];
+
+        this.activity.message="<t>".concat(this.activityTitle,",<p>",this.activityMessage);
 
         this._activityService
             .create(this.activity)

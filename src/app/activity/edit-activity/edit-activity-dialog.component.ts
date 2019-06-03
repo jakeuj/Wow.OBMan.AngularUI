@@ -20,6 +20,8 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
     activityLeftTags = ActivityDtoLeftTag;
     activityRightTags = ActivityDtoRightTag;
     dateTimeNow: Moment;
+    activityTitle: string;
+    activityMessage: string;
 
     constructor(
         injector: Injector,
@@ -37,11 +39,20 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
         this.dateTimeNow = moment();
         this._activityService.get(this._id).subscribe(result => {
             this.activity = result;
+            let activityMessageArray = this.activity.message.match(/<t>(.+),<p>(.+)/);
+            if(activityMessageArray && activityMessageArray.length==3)
+            {
+                this.activityTitle=activityMessageArray[1];
+                this.activityMessage=activityMessageArray[2];
+            }
         });
     }
 
     save(): void {
         this.saving = true;
+
+        this.activity.message="<t>".concat(this.activityTitle,",<p>",this.activityMessage);
+
         this._activityService
             .update(this.activity)
             .pipe(
