@@ -2,25 +2,6 @@
     <h1 mat-dialog-title>{{ "EditActivity" | localize }}</h1>
     <mat-dialog-content style="width:800px;height:300px;">
         <mat-tab-group>
-            <mat-tab [label]="'ActivityTexts' | localize">
-                <br />
-                <div class="row-fluid">
-                    <div class="col-md-12">
-                        <mat-form-field>
-                            <textarea
-                                    matInput
-                                    name="ActivityMessage"
-                                    [placeholder]="'ActivityMessage' | localize"
-                                    [(ngModel)]="activity.message"
-                                    rows="10"
-                                    required
-                                    minlength="1"
-                                    maxlength="512"
-                            ></textarea>
-                        </mat-form-field>
-                    </div>
-                </div>
-            </mat-tab>
             <mat-tab [label]="'ActivityDetails' | localize">
                 <br />
                 <div class="row-fluid">
@@ -36,8 +17,18 @@
                             />
                             <owl-date-time #dt1></owl-date-time>
                         </mat-form-field>
-
-
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="EndTime"
+                                    [placeholder]="'EndTime' | localize"
+                                    [(ngModel)]="activity.endTime"
+                                    [owlDateTime]="dt2"
+                                    [owlDateTimeTrigger]="dt2"
+                                    required
+                            />
+                            <owl-date-time #dt2></owl-date-time>
+                        </mat-form-field>
                         <mat-form-field>
                             <input
                                     matInput
@@ -60,55 +51,43 @@
                                     maxlength="32"
                             />
                         </mat-form-field>
-                        <mat-form-field>
-                            <input
-                                    matInput
-                                    name="LeftTag"
-                                    [placeholder]="'LeftTag' | localize"
-                                    [(ngModel)]="activity.leftTag"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
-                        </mat-form-field>
                     </div>
                     <div class="col-md-6">
                         <mat-form-field>
-                            <input
-                                    matInput
-                                    name="EndTime"
-                                    [placeholder]="'EndTime' | localize"
-                                    [(ngModel)]="activity.endTime"
-                                    [owlDateTime]="dt2"
-                                    [owlDateTimeTrigger]="dt2"
-                                    required
-                            />
-                            <owl-date-time #dt2></owl-date-time>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input
-                                    matInput
-                                    name="RightTag"
-                                    [placeholder]="'RightTag' | localize"
-                                    [(ngModel)]="activity.rightTag"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input
-                                    matInput
+                            <mat-select
                                     name="ActivityType"
                                     [placeholder]="'ActivityType' | localize"
                                     [(ngModel)]="activity.type"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
+                                    required>
+                                <mat-option *ngFor="let activityTypeKey of activityTypes | enumToArray" [value]="activityTypeKey">
+                                    {{ activityTypeKey | activityEnums:'ActivityDtoType' | localize}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select
+                                    name="LeftTag"
+                                    [placeholder]="'LeftTag' | localize"
+                                    [(ngModel)]="activity.leftTag"
+                                    required>
+                                <mat-option *ngFor="let activityLeftTag of activityLeftTags | enumToArray" [value]="activityLeftTag">
+                                    {{activityLeftTag | activityEnums:'ActivityDtoLeftTag' | localize}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select
+                                    name="RightTag"
+                                    [placeholder]="'RightTag' | localize"
+                                    [(ngModel)]="activity.rightTag"
+                                    required>
+                                <mat-option *ngFor="let activityRightTag of activityRightTags | enumToArray" [value]="activityRightTag">
+                                    {{activityRightTag | activityEnums:'ActivityDtoRightTag' | localize}}
+                                </mat-option>
+                            </mat-select>
                         </mat-form-field>
                         <div class="checkbox-wrapper">
-                            <ng-container *ngIf="activity.startTime<activity.endTime; else elseTmpl">
+                            <ng-container *ngIf="activity.startTime<activity.endTime && dateTimeNow <activity.endTime; else elseTmpl">
                                 <i class="material-icons" style="color:green;">
                                     check_box
                                 </i>
@@ -120,6 +99,28 @@
                             </ng-template>
                             <span>{{ "IsActive" | localize }}</span>
                         </div>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'ActivityTexts' | localize">
+                <br />
+                <div class="row-fluid">
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <textarea
+                                matInput
+                                name="ActivityMessage"
+                                [placeholder]="'ActivityMessage' | localize"
+                                [(ngModel)]="activity.message"
+                                required
+                                minlength="1"
+                                maxlength="512"
+                                cdkTextareaAutosize
+                                #autosize="cdkTextareaAutosize"
+                                cdkAutosizeMinRows="2"
+                                cdkAutosizeMaxRows="10"
+                            ></textarea>
+                        </mat-form-field>
                     </div>
                 </div>
             </mat-tab>

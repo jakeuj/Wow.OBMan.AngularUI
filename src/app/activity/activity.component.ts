@@ -4,9 +4,9 @@ import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
 import { ActivityServiceProxy, ActivityDto, PagedResultDtoOfActivityDto } from '@shared/service-proxies/service-proxies';
-import {EditActivityDialogComponent} from "./edit-activity/edit-activity-dialog.component";
-import {CreateActivityDialogComponent} from "@app/activity/create-activity/create-activity-dialog.component";
-
+import { EditActivityDialogComponent } from "./edit-activity/edit-activity-dialog.component";
+import { CreateActivityDialogComponent } from "@app/activity/create-activity/create-activity-dialog.component";
+import * as moment from 'moment';
 class PagedActivityRequestDto extends PagedRequestDto {
     type: number;
 }
@@ -20,6 +20,7 @@ class PagedActivityRequestDto extends PagedRequestDto {
 export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     activities: ActivityDto[] = [];
     type: number  | null;
+    dateTimeNow  = moment();
 
     constructor(
         injector: Injector,

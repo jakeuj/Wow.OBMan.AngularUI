@@ -21,10 +21,10 @@ $.extend( $.fn, {
 	// http://jqueryvalidation.org/validate/
 	validate: function( options ) {
 
-		// If nothing is selected, return nothing; can't chain anyway
+		// If nothing is activityTypeSelected, return nothing; can't chain anyway
 		if ( !this.length ) {
 			if ( options && options.debug && window.console ) {
-				console.warn( "Nothing selected, can't validate, returning nothing." );
+				console.warn( "Nothing activityTypeSelected, can't validate, returning nothing." );
 			}
 			return;
 		}
@@ -138,7 +138,7 @@ $.extend( $.fn, {
 		var element = this[ 0 ],
 			settings, staticRules, existingRules, data, param, filtered;
 
-		// If nothing is selected, return empty object; can't chain anyway
+		// If nothing is activityTypeSelected, return empty object; can't chain anyway
 		if ( element == null || element.form == null ) {
 			return;
 		}
@@ -1040,7 +1040,7 @@ $.extend( $.validator, {
 		getLength: function( value, element ) {
 			switch ( element.nodeName.toLowerCase() ) {
 			case "select":
-				return $( "option:selected", element ).length;
+				return $( "option:activityTypeSelected", element ).length;
 			case "input":
 				if ( this.checkable( element ) ) {
 					return this.findByName( element.name ).filter( ":checked" ).length;

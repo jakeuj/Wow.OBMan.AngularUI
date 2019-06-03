@@ -1,10 +1,12 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, OnInit, NgZone, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from '@shared/app-component-base';
-import { ActivityServiceProxy,CreateActivityDto} from '@shared/service-proxies/service-proxies';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { ActivityServiceProxy, CreateActivityDto, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag}
+from '@shared/service-proxies/service-proxies';
 import {Moment} from "@node_modules/moment";
-
+import * as moment from 'moment';
 @Component({
   selector: 'app-create-activity-dialog',
   templateUrl: './create-activity-dialog.component.html',
@@ -12,20 +14,37 @@ import {Moment} from "@node_modules/moment";
 })
 export class CreateActivityDialogComponent extends AppComponentBase
     implements OnInit {
-    saving = false;
+    saving: boolean = false;
     activity: CreateActivityDto = new CreateActivityDto();
-    public dateTimeRange : Moment[];
+    dateTimeNow: Moment;
+    dateTimeRange: Moment[];
+    activityTypes = ActivityDtoType;
+    activityLeftTags = ActivityDtoLeftTag;
+    activityRightTags = ActivityDtoRightTag;
+
 
     constructor(
         injector: Injector,
         public _activityService: ActivityServiceProxy,
-        private _dialogRef: MatDialogRef<CreateActivityDialogComponent>
+        private _dialogRef: MatDialogRef<CreateActivityDialogComponent>,
+        private _ngZone: NgZone,
     ) {
         super(injector);
     }
 
-    ngOnInit(): void {
+    @ViewChild('autosize') autosize: CdkTextareaAutosize;
 
+    ngOnInit(): void {
+        this.dateTimeNow=moment();
+        this.dateTimeRange=[this.dateTimeNow,this.dateTimeNow];
+
+        this.activity.goToType=0;
+        this.activity.goTo=0;
+
+        this.activity.leftTag = 0;
+        this.activity.rightTag = 0;
+
+        this.activity.message="<t>Title,<p>Context";
     }
 
     save(): void {

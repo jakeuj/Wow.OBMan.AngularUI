@@ -54,6 +54,7 @@ import {
 import { BlockDirective } from './directives/block.directive';
 import { BusyDirective } from './directives/busy.directive';
 import { EqualValidator } from './directives/equal-validator.directive';
+import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
 @NgModule({
     imports: [
         CommonModule,
@@ -101,7 +102,8 @@ import { EqualValidator } from './directives/equal-validator.directive';
         LocalizePipe,
         BlockDirective,
         BusyDirective,
-        EqualValidator
+        EqualValidator,
+        EnumToArrayPipe,
     ],
     exports: [
         AbpPaginationControlsComponent,
@@ -148,6 +150,8 @@ import { EqualValidator } from './directives/equal-validator.directive';
         MatTooltipModule,
         MatTreeModule,
         ScrollingModule,
+        //add
+        EnumToArrayPipe
     ]
 })
 export class SharedModule {

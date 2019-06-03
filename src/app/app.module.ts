@@ -87,7 +87,7 @@ export const MY_MOMENT_FORMATS = {
     ActivityComponent,
     EditActivityDialogComponent,
     ActivityEnumsPipe,
-    CreateActivityDialogComponent
+    CreateActivityDialogComponent,
   ],
   imports: [
     CommonModule,
