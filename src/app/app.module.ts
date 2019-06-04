@@ -45,6 +45,10 @@ import { ActivityComponent } from './activity/activity.component';
 import { EditActivityDialogComponent } from './activity/edit-activity/edit-activity-dialog.component';
 import { CreateActivityDialogComponent } from './activity/create-activity/create-activity-dialog.component';
 import { ActivityEnumsPipe } from './activity/activity-enums.pipe';
+// Activities Detail
+import { ActivityDetailsComponent } from './activity-details/activity-details.component';
+import { CreateActivityDetailDialogComponent } from './activity-details/create-activity-detail/create-activity-detail-dialog.component';
+import { EditActivityDetailDialogComponent } from './activity-details/edit-activity-detail/edit-activity-detail-dialog.component';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -88,6 +92,9 @@ export const MY_MOMENT_FORMATS = {
     EditActivityDialogComponent,
     ActivityEnumsPipe,
     CreateActivityDialogComponent,
+    ActivityDetailsComponent,
+    CreateActivityDetailDialogComponent,
+    EditActivityDetailDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -122,7 +129,10 @@ export const MY_MOMENT_FORMATS = {
     ResetPasswordDialogComponent,
     //activity
     EditActivityDialogComponent,
-      CreateActivityDialogComponent
+      CreateActivityDialogComponent,
+      // activity detail
+      CreateActivityDetailDialogComponent,
+      EditActivityDetailDialogComponent
   ]
 })
 export class AppModule {}

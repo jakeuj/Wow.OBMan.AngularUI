@@ -19,28 +19,107 @@
             </div>
             <div class="body table-responsive">
                 <!--query start-->
-                <!--
-                <div class="row clearfix">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <mat-form-field>
-                                    <mat-select [placeholder]="l('ActivityType')" [(ngModel)]="type" name="type">
-                                        <mat-option value="">{{ 'All' | localize }}</mat-option>
-                                        <mat-option value="1">{{ 'PURCHASE' | localize }}</mat-option>
-                                        <mat-option value="2">{{ 'DIAMOND' | localize }}</mat-option>
-                                        <mat-option value="3">{{ 'PRIZE_WHEEL' | localize }}</mat-option>
-                                        <mat-option value="4">{{ 'UNDRESS' | localize }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-12 text-right p-r-25">
-                                <button mat-raised-button color="primary" (click)="getDataPage(1)">{{ 'Search' | localize }}</button>
-                            </div>
+                <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{ "Query" | localize }}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            {{ (panelOpenState?"QueryOpen":"QueryClosed") | localize }}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <ng-template matExpansionPanelContent>
+                        <div class="row clearfix">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <mat-form-field>
+                                            <input matInput [placeholder]="l('GoToType')" [(ngModel)]="goToType" name="goToType" type="number">
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <mat-select
+                                                    name="ActivityType"
+                                                    [placeholder]="'ActivityType' | localize"
+                                                    [(ngModel)]="type">
+                                                <mat-option>---</mat-option>
+                                                <mat-option *ngFor="let activityTypeKey of activityTypes | enumToArray" [value]="activityTypeKey">
+                                                    {{ activityTypeKey | activityEnums:'ActivityDtoType' | localize}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <mat-form-field>
+                                            <input matInput [placeholder]="l('GoTo')" [(ngModel)]="goTo" name="goTo" type="number">
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input matInput
+                                                   name="StartTime"
+                                                   [placeholder]="'StartTime' | localize"
+                                                   [(ngModel)]="startTime"
+                                                   [owlDateTime]="dt1"
+                                                   [owlDateTimeTrigger]="dt1"
+                                            />
+                                            <owl-date-time #dt1></owl-date-time>
+                                        </mat-form-field>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <mat-form-field>
+                                            <mat-select
+                                                    name="LeftTag"
+                                                    [placeholder]="'LeftTag' | localize"
+                                                    [(ngModel)]="leftTag">
+                                                <mat-option>---</mat-option>
+                                                <mat-option *ngFor="let activityLeftTag of activityLeftTags | enumToArray" [value]="activityLeftTag">
+                                                    {{activityLeftTag | activityEnums:'ActivityDtoLeftTag' | localize}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input matInput
+                                                   name="EndTime"
+                                                   [placeholder]="'EndTime' | localize"
+                                                   [(ngModel)]="endTime"
+                                                   [owlDateTime]="dt2"
+                                                   [owlDateTimeTrigger]="dt2"
+                                            />
+                                            <owl-date-time #dt2></owl-date-time>
+                                        </mat-form-field>
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <mat-form-field>
+                                            <mat-select
+                                                    name="RightTag"
+                                                    [placeholder]="'RightTag' | localize"
+                                                    [(ngModel)]="rightTag">
+                                                <mat-option>---</mat-option>
+                                                <mat-option *ngFor="let activityRightTag of activityRightTags | enumToArray" [value]="activityRightTag">
+                                                    {{activityRightTag | activityEnums:'ActivityDtoRightTag' | localize}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field>
+                                            <input matInput
+                                                   name="CreationTime"
+                                                   [placeholder]="'CreationTime' | localize"
+                                                   [(ngModel)]="creationTime"
+                                                   [owlDateTime]="dt3"
+                                                   [owlDateTimeTrigger]="dt3"
+                                            />
+                                            <owl-date-time #dt3></owl-date-time>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-12 text-right p-r-25">
+                                        <button mat-raised-button color="primary" (click)="getDataPage(1)">{{ 'Search' | localize }}</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-                -->
+                    </ng-template>
+                </mat-expansion-panel>
                 <!--query end-->
                 <table class="table table-hover table-striped" [busy]="isTableLoading">
                     <thead>

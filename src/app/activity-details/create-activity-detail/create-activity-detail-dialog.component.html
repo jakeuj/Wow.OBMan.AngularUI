@@ -1,0 +1,85 @@
+<form autocomplete="off" #createUserModal="ngForm" (ngSubmit)="save()">
+    <h1 mat-dialog-title>{{ "CreateNewActivityDetail" | localize }}</h1>
+    <mat-dialog-content style="width:800px;height:300px;">
+        <mat-tab-group>
+            <mat-tab [label]="'ActivityDetails' | localize">
+                <br />
+                <div class="row-fluid">
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="ActivityId"
+                                    [placeholder]="'ActivityId' | localize"
+                                    [(ngModel)]="activity.activityId"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="Threshold"
+                                    [placeholder]="'Threshold' | localize"
+                                    [(ngModel)]="activity.threshold"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="ItemType"
+                                    [placeholder]="'ItemType' | localize"
+                                    [(ngModel)]="activity.itemType"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="ItemId"
+                                    [placeholder]="'ItemId' | localize"
+                                    [(ngModel)]="activity.itemId"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="Amount"
+                                    [placeholder]="'Amount' | localize"
+                                    [(ngModel)]="activity.amount"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button
+                mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!createUserModal.form.valid || saving"
+        >
+            {{ "Save" | localize }}
+        </button>
+    </div>
+</form>

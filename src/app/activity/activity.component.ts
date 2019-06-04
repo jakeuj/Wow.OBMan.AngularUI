@@ -3,12 +3,25 @@ import { MatDialog } from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
-import { ActivityServiceProxy, ActivityDto, PagedResultDtoOfActivityDto } from '@shared/service-proxies/service-proxies';
+import {
+    ActivityServiceProxy,
+    ActivityDto,
+    PagedResultDtoOfActivityDto,
+    LeftTag, RightTag, Type, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag
+} from '@shared/service-proxies/service-proxies';
 import { EditActivityDialogComponent } from "./edit-activity/edit-activity-dialog.component";
 import { CreateActivityDialogComponent } from "@app/activity/create-activity/create-activity-dialog.component";
 import * as moment from 'moment';
-class PagedActivityRequestDto extends PagedRequestDto {
-    type: number;
+
+class GetAllActivitiesInput extends PagedRequestDto {
+    goToType: number | null | undefined;
+    goTo: number | null | undefined;
+    leftTag: LeftTag | null | undefined;
+    rightTag: RightTag | null | undefined;
+    type: Type | null | undefined;
+    startTime: moment.Moment | null | undefined;
+    endTime: moment.Moment | null | undefined;
+    creationTime: moment.Moment | null | undefined;
 }
 
 @Component({
@@ -19,8 +32,19 @@ class PagedActivityRequestDto extends PagedRequestDto {
 })
 export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     activities: ActivityDto[] = [];
-    type: number  | null;
+    goToType: number | null | undefined;
+    goTo: number | null | undefined;
+    leftTag: LeftTag | null | undefined;
+    rightTag: RightTag | null | undefined;
+    type: Type | null | undefined;
+    startTime: moment.Moment | null | undefined;
+    endTime: moment.Moment | null | undefined;
+    creationTime: moment.Moment | null | undefined;
+    activityTypes = ActivityDtoType;
+    activityLeftTags = ActivityDtoLeftTag;
+    activityRightTags = ActivityDtoRightTag;
     dateTimeNow  = moment();
+    panelOpenState:boolean=false;
 
     constructor(
         injector: Injector,
@@ -39,15 +63,22 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     }
 
     protected list(
-        request: PagedActivityRequestDto,
+        request: GetAllActivitiesInput,
         pageNumber: number,
         finishedCallback: Function
     ): void {
 
-        request.type = this.type;
+        request.goToType = this.goToType==null?undefined:this.goToType;
+        request.goTo = this.goTo==null?undefined:this.goTo;
+        request.leftTag = this.leftTag==null?undefined:this.leftTag;
+        request.rightTag = this.rightTag==null?undefined:this.rightTag;
+        request.type = this.type==null?undefined:this.type;
+        request.startTime = this.startTime==null?undefined:this.startTime;
+        request.endTime = this.endTime==null?undefined:this.endTime;
+        request.creationTime = this.creationTime==null?undefined:this.creationTime;
 
         this._activityServiceProxy
-            .getAll(request.type, request.skipCount, request.maxResultCount)
+            .getAll(request.goToType,request.goTo,request.leftTag,request.rightTag,request.type,request.startTime,request.endTime,request.creationTime, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();

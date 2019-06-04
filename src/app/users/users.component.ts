@@ -19,9 +19,9 @@ class PagedUsersRequestDto extends PagedRequestDto {
     animations: [appModuleAnimation()],
     styles: [
         `
-          mat-form-field {
-            padding: 10px;
-          }
+            mat-form-field {
+                padding: 10px;
+            }
         `
       ]
 })
