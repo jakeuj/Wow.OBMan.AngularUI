@@ -1,6 +1,6 @@
 {
-  "remoteServiceBaseUrl": "http://139.9.52.196:8080",
-  "appBaseUrl": "http://139.9.52.196:4200",
+  "remoteServiceBaseUrl": "http://admin2.nlzm.huayang.fun:8080",
+  "appBaseUrl": "http://admin2.nlzm.huayang.fun:8081",
   "localeMappings": [
     {
       "from": "pt-BR",
