@@ -29,7 +29,20 @@
                             </div>
                             <div class="col-md-4">
                                 <mat-form-field>
-                                    <input matInput [placeholder]="l('ItemType')" [(ngModel)]="itemType" name="itemType" type="number">
+                                    <mat-select name="ItemType" [placeholder]="'ItemType' | localize" [(ngModel)]="itemType">
+                                        <mat-option>---</mat-option>
+                                        <mat-option value="1">{{'FreeDiamond'| localize}}</mat-option>
+                                        <mat-option value="2">{{'Gold'| localize}}</mat-option>
+                                        <mat-option value="3">{{'Character'| localize}}</mat-option>
+                                        <mat-option value="4">{{'Arm'| localize}}</mat-option>
+                                        <mat-option value="5">{{'Item'| localize}}</mat-option>
+                                        <mat-option value="6">{{'GACHA'| localize}}</mat-option>
+                                        <mat-option value="7">{{'PurchaseDiamond'| localize}}</mat-option>
+                                        <mat-option value="8">{{'ActionPoint'| localize}}</mat-option>
+                                        <mat-option value="9">{{'MonthCard'| localize}}</mat-option>
+                                        <mat-option value="10">{{'UndressEnergy'| localize}}</mat-option>
+                                        <mat-option value="11">{{'DMMPoint'| localize}}</mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </div>
                             <div class="col-md-4">
@@ -70,7 +83,7 @@
                         <td>{{ activityDetail.id }}</td>
                         <td>{{ activityDetail.activityId }}</td>
                         <td>{{ activityDetail.threshold }}</td>
-                        <td>{{ activityDetail.itemType }}</td>
+                        <td>{{ activityDetail.itemType | activityEnums:'ItemType' | localize }}</td>
                         <td>{{ activityDetail.itemId }}</td>
                         <td>{{ activityDetail.amount }}</td>
                         <td>

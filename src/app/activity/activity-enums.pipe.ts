@@ -51,6 +51,32 @@ export class ActivityEnumsPipe implements PipeTransform {
                       return "TOP";
               }
               break;
+          case 'ItemType':
+              switch (value) {
+                  case 1:
+                      return "FreeDiamond";
+                  case 2:
+                      return "Gold";
+                  case 3:
+                      return "Character";
+                  case 4:
+                      return "Arm";
+                  case 5:
+                      return "Item";
+                  case 6:
+                      return "GACHA";
+                  case 7:
+                      return "PurchaseDiamond";
+                  case 8:
+                      return "ActionPoint";
+                  case 9:
+                      return "MonthCard";
+                  case 10:
+                      return "UndressEnergy";
+                  case 99:
+                      return "DMMPoint";
+              }
+              break;
       }
       return value;
   }
