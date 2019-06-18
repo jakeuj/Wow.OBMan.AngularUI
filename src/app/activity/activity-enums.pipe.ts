@@ -21,6 +21,8 @@ export class ActivityEnumsPipe implements PipeTransform {
                       return "PRIZE_WHEEL";
                   case 4:
                       return "UNDRESS";
+                  case 5:
+                      return "TinyGame";
               }
               break;
           case 'CreateActivityDtoLeftTag':
@@ -29,14 +31,12 @@ export class ActivityEnumsPipe implements PipeTransform {
                   case 0:
                       return "NONE";
                   case 1:
-                      return "BUG";
+                      return "NEW";
                   case 2:
-                      return "EVENT";
+                      return "LIMIT";
                   case 3:
-                      return "GACHA";
+                      return "HOT";
                   case 4:
-                      return "NOTICE";
-                  case 5:
                       return "OTHERS";
               }
               break;

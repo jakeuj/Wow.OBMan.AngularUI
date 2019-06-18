@@ -31,15 +31,19 @@
                     </div>
                     <div class="col-md-6">
                         <mat-form-field>
-                            <input
-                                    matInput
-                                    name="ItemType"
-                                    [placeholder]="'ItemType' | localize"
-                                    [(ngModel)]="activity.itemType"
-                                    type="number"
-                                    required
-                                    maxlength="32"
-                            />
+                            <mat-select name="ItemType" [placeholder]="'ItemType' | localize" [(ngModel)]="activity.itemType" required>
+                                <mat-option [value]=1>{{'FreeDiamond'| localize}}</mat-option>
+                                <mat-option [value]=2>{{'Gold'| localize}}</mat-option>
+                                <mat-option [value]=3>{{'Character'| localize}}</mat-option>
+                                <mat-option [value]=4>{{'Arm'| localize}}</mat-option>
+                                <mat-option [value]=5>{{'Item'| localize}}</mat-option>
+                                <mat-option [value]=6>{{'GACHA'| localize}}</mat-option>
+                                <mat-option [value]=7>{{'PurchaseDiamond'| localize}}</mat-option>
+                                <mat-option [value]=8>{{'ActionPoint'| localize}}</mat-option>
+                                <mat-option [value]=9>{{'MonthCard'| localize}}</mat-option>
+                                <mat-option [value]=10>{{'UndressEnergy'| localize}}</mat-option>
+                                <mat-option [value]=11>{{'DMMPoint'| localize}}</mat-option>
+                            </mat-select>
                         </mat-form-field>
                         <mat-form-field>
                             <input

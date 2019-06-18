@@ -65,6 +65,7 @@
                         <th>{{ "Threshold" | localize }}</th>
                         <th>{{ "ItemType" | localize }}</th>
                         <th>{{ "ItemId" | localize }}</th>
+                        <th>{{ "ItemName" | localize }}</th>
                         <th>{{ "Amount" | localize }}</th>
                         <th>{{ "Actions" | localize }}</th>
                     </tr>
@@ -85,6 +86,7 @@
                         <td>{{ activityDetail.threshold }}</td>
                         <td>{{ activityDetail.itemType | activityEnums:'ItemType' | localize }}</td>
                         <td>{{ activityDetail.itemId }}</td>
+                        <td>{{ activityDetail.itemName  }}</td>
                         <td>{{ activityDetail.amount }}</td>
                         <td>
                             <button class="action-button" mat-icon-button [matMenuTriggerFor]="actionsMenu">

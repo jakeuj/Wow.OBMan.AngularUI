@@ -24,4 +24,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="src\shared\paged-sorted-listing-component-base.ts" />
+  </ItemGroup>
 </Project>

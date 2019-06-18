@@ -1,14 +1,14 @@
 import {Component, Injector} from '@angular/core';
 import {appModuleAnimation} from "@shared/animations/routerTransition";
-import {PagedListingComponentBase, PagedRequestDto} from "@shared/paged-listing-component-base";
-import {ActivityDetailDto, PagedResultDtoOfActivityDetailDto, ActivityDetailServiceProxy}
+import {PagedAndSortedRequestDto,PagedSortedListingComponentBase} from "@shared/paged-sorted-listing-component-base";
+import {ActivityDetailWhitItemNameDto,ActivityDetailDto, PagedResultDtoOfActivityDetailWhitItemNameDto, ActivityDetailServiceProxy}
     from "@shared/service-proxies/service-proxies";
 import {MatDialog} from "@node_modules/@angular/material";
 import {finalize} from "@node_modules/rxjs/internal/operators";
 import {EditActivityDetailDialogComponent} from "@app/activity-details/edit-activity-detail/edit-activity-detail-dialog.component";
 import {CreateActivityDetailDialogComponent} from "@app/activity-details/create-activity-detail/create-activity-detail-dialog.component";
 
-class GetAllActivityDetailsInput extends PagedRequestDto {
+class GetAllActivityDetailsInput extends PagedAndSortedRequestDto {
     activityId: number | null | undefined;
     itemType: number | null | undefined;
     itemId: number | null | undefined;
@@ -20,8 +20,8 @@ class GetAllActivityDetailsInput extends PagedRequestDto {
   styleUrls: ['./activity-details.component.css'],
     animations: [appModuleAnimation()],
 })
-export class ActivityDetailsComponent extends PagedListingComponentBase<ActivityDetailDto> {
-    activityDetails: ActivityDetailDto[] = [];
+export class ActivityDetailsComponent extends PagedSortedListingComponentBase<ActivityDetailDto> {
+    activityDetails: ActivityDetailWhitItemNameDto[] = [];
     activityId: number | null | undefined;
     itemType: number | null | undefined;
     itemId: number | null | undefined;
@@ -51,15 +51,16 @@ export class ActivityDetailsComponent extends PagedListingComponentBase<Activity
         request.activityId = this.activityId==null?undefined:this.activityId;
         request.itemType = this.itemType==null?undefined:this.itemType;
         request.itemId = this.itemId==null?undefined:this.itemId;
+        request.sorting="ActivityId DESC, Threshold ASC";
 
         this._activityServiceProxy
-            .getAll(request.activityId,request.itemType,request.itemId, request.skipCount, request.maxResultCount)
+            .getAll(request.activityId,request.itemType,request.itemId,request.sorting, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();
                 })
             )
-            .subscribe((result: PagedResultDtoOfActivityDetailDto) => {
+            .subscribe((result: PagedResultDtoOfActivityDetailWhitItemNameDto) => {
                 this.activityDetails = result.items;
                 this.showPaging(result, pageNumber);
             });

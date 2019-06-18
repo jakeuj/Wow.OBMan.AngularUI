@@ -45,6 +45,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     activityRightTags = ActivityDtoRightTag;
     dateTimeNow  = moment();
     panelOpenState:boolean=false;
+    public saving = false;
 
     constructor(
         injector: Injector,
@@ -100,6 +101,31 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                         this.refresh();
                     });
                 }
+            }
+        );
+    }
+
+    mapping(): void {
+        this.saving = true;
+        abp.message.confirm(
+            this.l('UserDeleteWarningMessage'),
+            (result: boolean) => {
+                if (result) {
+                    this._activityServiceProxy
+                        .mappingActivity()
+                        .pipe(
+                            finalize(() => {
+                                this.saving = false;
+                            })
+                        )
+                        .subscribe(() => {
+                            this.notify.info(this.l('SavedSuccessfully'));
+                            //this.close(true);
+
+                            // abp.notify.success(this.l('SuccessfullyDeleted'));
+                            // this.refresh();
+                        });
+                } else this.saving=false;
             }
         );
     }
