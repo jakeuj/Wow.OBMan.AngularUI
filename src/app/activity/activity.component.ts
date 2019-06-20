@@ -108,7 +108,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     mapping(): void {
         this.saving = true;
         abp.message.confirm(
-            this.l('UserDeleteWarningMessage'),
+            this.l('ActivityMappingWarningMessage'),
             (result: boolean) => {
                 if (result) {
                     this._activityServiceProxy
@@ -119,7 +119,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                             })
                         )
                         .subscribe(() => {
-                            this.notify.info(this.l('SavedSuccessfully'));
+                            this.notify.info(this.l('MappedSuccessfully'));
                             //this.close(true);
 
                             // abp.notify.success(this.l('SuccessfullyDeleted'));

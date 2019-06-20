@@ -11,18 +11,20 @@ export class SideBarNavComponent extends AppComponentBase {
 
     menuItems: MenuItem[] = [
         new MenuItem(this.l('HomePage'), '', 'home', '/app/home'),
-
         new MenuItem(this.l('Tenants'), 'Pages.Tenants', 'business', '/app/tenants'),
         new MenuItem(this.l('Users'), 'Pages.Users', 'people', '/app/users'),
         new MenuItem(this.l('Roles'), 'Pages.Roles', 'local_offer', '/app/roles'),
-        // new MenuItem(this.l('Activity'), 'Pages.Activity', 'local_offer', '/app/activities'),
-        // new MenuItem(this.l('ActivityDetails'), 'Pages.Activity', 'local_offer', '/app/activityDetails'),
-        new MenuItem(this.l('About'), '', 'info', '/app/about'),
-
-        new MenuItem(this.l('Activity'), 'Pages.Activity', 'menu', '', [
-            new MenuItem(this.l('Activity'), 'Pages.Activity', '', '/app/activities'),
+        new MenuItem(this.l('Activity'), 'Pages.Activity', 'info', '', [
+            new MenuItem(this.l('ActivityConfig'), 'Pages.Activity', '', '/app/activities'),
             new MenuItem(this.l('ActivityDetails'), 'Pages.Activity', '', '/app/activityDetails' )
-        ])
+        ]),
+        new MenuItem(this.l('About'), '', 'menu', '', [
+            new MenuItem(this.l('ProductionAdmin'), '', '', 'http://admin.nlzm.huayang.fun/' ),
+            new MenuItem(this.l('TestAdmin'), '', '', 'http://admin.nlzm.huayang.fun:9999/' ),
+            new MenuItem(this.l('WowGame'), '', '', 'http://www.wowgame.com.tw/' ),
+            new MenuItem(this.l('ASP.NET Boilerplate'), '', '', '/app/about'),
+
+        ]),
     ];
 
     constructor(
