@@ -130,6 +130,8 @@
                     <tr>
                         <th>{{ "ActivityId" | localize }}</th>
                         <th>{{ "ActivityType" | localize }}</th>
+                        <th>{{ "ActivityTitle" | localize }}</th>
+                        <th>{{ "ActivityMessage" | localize }}</th>
                         <th>{{ "ActivityTime" | localize }}</th>
                         <th>
                             <div style="text-align:center">{{ "ActivityState" | localize }}</div>
@@ -150,6 +152,8 @@
               ">
                         <td>{{ activity.id }}</td>
                         <td>{{ activity.type | activityEnums:'CreateActivityDtoType' | localize}}</td>
+                        <td>{{ activity.message | getActivityTitle}}</td>
+                        <td>{{ activity.message | getActivityTitle:true}}</td>
                         <td>{{ activity.startTime | date:'yyyy-MM-dd HH:mm:ss' }} - {{ activity.endTime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
                         <td align="center">
                             <i class="material-icons" *ngIf="activity.endTime>activity.startTime && dateTimeNow <activity.endTime;else elseTmpl" style="color:green;">

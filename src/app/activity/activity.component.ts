@@ -120,10 +120,6 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                         )
                         .subscribe(() => {
                             this.notify.info(this.l('MappedSuccessfully'));
-                            //this.close(true);
-
-                            // abp.notify.success(this.l('SuccessfullyDeleted'));
-                            // this.refresh();
                         });
                 } else this.saving=false;
             }

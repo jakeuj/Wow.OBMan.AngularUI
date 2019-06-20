@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ActivityEnumsPipe implements PipeTransform {
 
-  transform(value: any, type?: string): string {
+  transform(value: any, type: string): string {
       if(!type || isNaN(Number(value)))
           return value;
 
