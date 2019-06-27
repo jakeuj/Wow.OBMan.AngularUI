@@ -152,25 +152,30 @@ export class ActivityServiceProxy {
     }
 
     /**
+     * @param input (optional) 
      * @return Success
      */
-    mappingActivity(): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/MappingActivity";
+    mappingActivityByActivityId(input: MappingActivityByActivityIdInput | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/MappingActivityByActivityId";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(input);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json", 
             })
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMappingActivity(response_);
+            return this.processMappingActivityByActivityId(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processMappingActivity(<any>response_);
+                    return this.processMappingActivityByActivityId(<any>response_);
                 } catch (e) {
                     return <Observable<void>><any>_observableThrow(e);
                 }
@@ -179,7 +184,7 @@ export class ActivityServiceProxy {
         }));
     }
 
-    protected processMappingActivity(response: HttpResponseBase): Observable<void> {
+    protected processMappingActivityByActivityId(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -2539,6 +2544,57 @@ export interface IRegisterOutput {
     canLogin: boolean | undefined;
 }
 
+export class MappingActivityByActivityIdInput implements IMappingActivityByActivityIdInput {
+    activityId: number[] | undefined;
+
+    constructor(data?: IMappingActivityByActivityIdInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["activityId"] && data["activityId"].constructor === Array) {
+                this.activityId = [] as any;
+                for (let item of data["activityId"])
+                    this.activityId.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): MappingActivityByActivityIdInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new MappingActivityByActivityIdInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.activityId && this.activityId.constructor === Array) {
+            data["activityId"] = [];
+            for (let item of this.activityId)
+                data["activityId"].push(item);
+        }
+        return data; 
+    }
+
+    clone(): MappingActivityByActivityIdInput {
+        const json = this.toJSON();
+        let result = new MappingActivityByActivityIdInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IMappingActivityByActivityIdInput {
+    activityId: number[] | undefined;
+}
+
 export class ActivityDto implements IActivityDto {
     message: string | undefined;
     goToType: number | undefined;
@@ -4633,7 +4689,6 @@ export enum LeftTag {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
-    _5 = 5, 
 }
 
 export enum RightTag {
@@ -4647,6 +4702,7 @@ export enum Type {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
+    _5 = 5, 
 }
 
 export enum IsTenantAvailableOutputState {
@@ -4661,7 +4717,6 @@ export enum ActivityDtoLeftTag {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
-    _5 = 5, 
 }
 
 export enum ActivityDtoRightTag {
@@ -4675,6 +4730,7 @@ export enum ActivityDtoType {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
+    _5 = 5, 
 }
 
 export enum CreateActivityDtoLeftTag {
@@ -4683,7 +4739,6 @@ export enum CreateActivityDtoLeftTag {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
-    _5 = 5, 
 }
 
 export enum CreateActivityDtoRightTag {
@@ -4697,6 +4752,7 @@ export enum CreateActivityDtoType {
     _2 = 2, 
     _3 = 3, 
     _4 = 4, 
+    _5 = 5, 
 }
 
 export class SwaggerException extends Error {

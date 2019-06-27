@@ -128,6 +128,7 @@
                 <table class="table table-hover table-striped" [busy]="isTableLoading">
                     <thead>
                     <tr>
+                        <th>{{ "Mapping" | localize }}</th>
                         <th>{{ "ActivityId" | localize }}</th>
                         <th>{{ "ActivityType" | localize }}</th>
                         <th>{{ "ActivityTitle" | localize }}</th>
@@ -150,6 +151,14 @@
                         totalItems: totalItems
                       })
               ">
+                        <td>
+                            <div class="checkbox-wrapper">
+                                <mat-checkbox
+                                        (change)="onActivityChange(activity, $event)"
+                                >
+                                </mat-checkbox>
+                            </div>
+                        </td>
                         <td>{{ activity.id }}</td>
                         <td>{{ activity.type | activityEnums:'CreateActivityDtoType' | localize}}</td>
                         <td>{{ activity.message | getActivityTitle}}</td>
