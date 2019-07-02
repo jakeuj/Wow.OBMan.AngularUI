@@ -25,6 +25,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\create-prize-wheel-group\create-prize-wheel-group-dialog.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\create-prize-wheel-group\create-prize-wheel-group-dialog.component.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\edit-prize-wheel-group\edit-prize-wheel-group-dialog.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\edit-prize-wheel-group\edit-prize-wheel-group-dialog.component.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\prize-wheel-group.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel-group\prize-wheel-group.component.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\create-prize-wheel\create-prize-wheel-dialog.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\create-prize-wheel\create-prize-wheel-dialog.component.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\edit-prize-wheel\edit-prize-wheel-dialog.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\edit-prize-wheel\edit-prize-wheel-dialog.component.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\prize-wheel.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\prize-wheel.component.ts" />
     <TypeScriptCompile Include="src\shared\paged-sorted-listing-component-base.ts" />
   </ItemGroup>
 </Project>

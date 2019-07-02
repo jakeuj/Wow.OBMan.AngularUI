@@ -16,7 +16,11 @@ export class SideBarNavComponent extends AppComponentBase {
         new MenuItem(this.l('Roles'), 'Pages.Roles', 'local_offer', '/app/roles'),
         new MenuItem(this.l('Activity'), 'Pages.Activity', 'info', '', [
             new MenuItem(this.l('ActivityConfig'), 'Pages.Activity', '', '/app/activities'),
-            new MenuItem(this.l('ActivityDetails'), 'Pages.Activity', '', '/app/activityDetails' )
+            new MenuItem(this.l('ActivityDetails'), 'Pages.Activity', '', '/app/activityDetails' ),
+            new MenuItem(this.l('PrizeWheel'), 'Pages.Activity', '', '', [
+            new MenuItem(this.l('PrizeWheel'), 'Pages.Activity', '', '/app/prizeWheel' ),
+            new MenuItem(this.l('PrizeWheelGroup'), 'Pages.Activity', '', '/app/prizeWheelGroup' ),
+            new MenuItem(this.l('PrizeWheelRate'), 'Pages.Activity', '', '/app/prizeWheelRate' )])
         ]),
         new MenuItem(this.l('About'), '', 'menu', '', [
             new MenuItem(this.l('ProductionAdmin'), '', '', 'http://admin.nlzm.huayang.fun/' ),

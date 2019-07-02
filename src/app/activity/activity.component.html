@@ -17,6 +17,10 @@
                                 <mat-icon>mapping</mat-icon>
                                 <span>{{ "Mapping" | localize }}</span>
                             </button>
+                            <button mat-menu-item [disabled]="saving" (click)="addCache()">
+                                <mat-icon>addcache</mat-icon>
+                                <span>{{ "AddCache" | localize }}</span>
+                            </button>
                         </mat-menu>
                     </li>
                 </ul>
@@ -152,12 +156,13 @@
                       })
               ">
                         <td>
-                            <div class="checkbox-wrapper">
+                            <mat-slide-toggle (change)="onActivityChange(activity, $event)"></mat-slide-toggle>
+                            <!--<div class="checkbox-wrapper">
                                 <mat-checkbox
                                         (change)="onActivityChange(activity, $event)"
                                 >
                                 </mat-checkbox>
-                            </div>
+                            </div>-->
                         </td>
                         <td>{{ activity.id }}</td>
                         <td>{{ activity.type | activityEnums:'CreateActivityDtoType' | localize}}</td>

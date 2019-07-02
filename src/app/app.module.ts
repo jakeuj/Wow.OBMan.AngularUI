@@ -50,6 +50,15 @@ import { ActivityDetailsComponent } from './activity-details/activity-details.co
 import { CreateActivityDetailDialogComponent } from './activity-details/create-activity-detail/create-activity-detail-dialog.component';
 import { EditActivityDetailDialogComponent } from './activity-details/edit-activity-detail/edit-activity-detail-dialog.component';
 import { GetActivityTitlePipe } from './activity/get-activity-title.pipe';
+import { PrizeWheelComponent } from './prize-wheel/prize-wheel/prize-wheel.component';
+import { CreatePrizeWheelDialogComponent } from './prize-wheel/prize-wheel/create-prize-wheel/create-prize-wheel-dialog.component';
+import { EditPrizeWheelDialogComponent } from './prize-wheel/prize-wheel/edit-prize-wheel/edit-prize-wheel-dialog.component';
+import { PrizeWheelGroupComponent } from './prize-wheel/prize-wheel-group/prize-wheel-group.component';
+import { CreatePrizeWheelGroupDialogComponent } from './prize-wheel/prize-wheel-group/create-prize-wheel-group/create-prize-wheel-group-dialog.component';
+import { EditPrizeWheelGroupDialogComponent } from './prize-wheel/prize-wheel-group/edit-prize-wheel-group/edit-prize-wheel-group-dialog.component';
+import { PrizeWheelRateComponent } from './prize-wheel/prize-wheel-rate/prize-wheel-rate.component';
+import { CreatePrizeWheelRateDialogComponent } from './prize-wheel/prize-wheel-rate/create-prize-wheel-rate/create-prize-wheel-rate-dialog.component';
+import { EditPrizeWheelRateDialogComponent } from './prize-wheel/prize-wheel-rate/edit-prize-wheel-rate/edit-prize-wheel-rate-dialog.component';
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
@@ -97,6 +106,15 @@ export const MY_MOMENT_FORMATS = {
     CreateActivityDetailDialogComponent,
     EditActivityDetailDialogComponent,
     GetActivityTitlePipe,
+    PrizeWheelComponent,
+    CreatePrizeWheelDialogComponent,
+    EditPrizeWheelDialogComponent,
+    PrizeWheelGroupComponent,
+    CreatePrizeWheelGroupDialogComponent,
+    EditPrizeWheelGroupDialogComponent,
+    PrizeWheelRateComponent,
+    CreatePrizeWheelRateDialogComponent,
+    EditPrizeWheelRateDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -134,7 +152,18 @@ export const MY_MOMENT_FORMATS = {
       CreateActivityDialogComponent,
       // activity detail
       CreateActivityDetailDialogComponent,
-      EditActivityDetailDialogComponent
+      EditActivityDetailDialogComponent,
+      // PrizeWheel
+      CreatePrizeWheelDialogComponent,
+      EditPrizeWheelDialogComponent,
+      //PrizeWheelGroup
+      CreatePrizeWheelGroupDialogComponent,
+      EditPrizeWheelGroupDialogComponent,
+      //PrizeWheelRate
+      CreatePrizeWheelRateDialogComponent,
+      EditPrizeWheelRateDialogComponent
+
+
   ]
 })
 export class AppModule {}

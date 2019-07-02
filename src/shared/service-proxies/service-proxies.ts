@@ -204,6 +204,57 @@ export class ActivityServiceProxy {
     }
 
     /**
+     * @return Success
+     */
+    addCache(): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/AddCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddCache(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddCache(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -513,6 +564,62 @@ export class ActivityDetailServiceProxy {
     }
 
     /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: ActivityDetailDto | null | undefined): Observable<ActivityDetailWhitItemNameDto> {
+        let url_ = this.baseUrl + "/api/services/app/ActivityDetail/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDetailWhitItemNameDto.fromJS(resultData200) : new ActivityDetailWhitItemNameDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDetailWhitItemNameDto>(<any>null);
+    }
+
+    /**
      * @param activityId (optional) 
      * @param itemType (optional) 
      * @param itemId (optional) 
@@ -614,62 +721,6 @@ export class ActivityDetailServiceProxy {
     }
 
     protected processGet(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityDetailWhitItemNameDto.fromJS(resultData200) : new ActivityDetailWhitItemNameDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ActivityDetailWhitItemNameDto>(<any>null);
-    }
-
-    /**
-     * @param input (optional) 
-     * @return Success
-     */
-    create(input: ActivityDetailDto | null | undefined): Observable<ActivityDetailWhitItemNameDto> {
-        let url_ = this.baseUrl + "/api/services/app/ActivityDetail/Create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreate(<any>response_);
-                } catch (e) {
-                    return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processCreate(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -843,6 +894,888 @@ export class ConfigurationServiceProxy {
     }
 
     protected processChangeUiTheme(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class PrizeWheelServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<PrizeWheelDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheel/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<PrizeWheelDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelDto.fromJS(resultData200) : new PrizeWheelDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelDto>(<any>null);
+    }
+
+    /**
+     * @param prizeWheelGroupId (optional) 
+     * @param usedItemType (optional) 
+     * @param usedItemId (optional) 
+     * @param usedItemCount (optional) 
+     * @param spinCount (optional) 
+     * @param purchaseId (optional) 
+     * @param creationTime (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(prizeWheelGroupId: number | null | undefined, usedItemType: number | null | undefined, usedItemId: number | null | undefined, usedItemCount: number | null | undefined, spinCount: number | null | undefined, purchaseId: number | null | undefined, creationTime: moment.Moment | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfPrizeWheelDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheel/GetAll?";
+        if (prizeWheelGroupId !== undefined)
+            url_ += "PrizeWheelGroupId=" + encodeURIComponent("" + prizeWheelGroupId) + "&"; 
+        if (usedItemType !== undefined)
+            url_ += "UsedItemType=" + encodeURIComponent("" + usedItemType) + "&"; 
+        if (usedItemId !== undefined)
+            url_ += "UsedItemId=" + encodeURIComponent("" + usedItemId) + "&"; 
+        if (usedItemCount !== undefined)
+            url_ += "UsedItemCount=" + encodeURIComponent("" + usedItemCount) + "&"; 
+        if (spinCount !== undefined)
+            url_ += "SpinCount=" + encodeURIComponent("" + spinCount) + "&"; 
+        if (purchaseId !== undefined)
+            url_ += "PurchaseId=" + encodeURIComponent("" + purchaseId) + "&"; 
+        if (creationTime !== undefined)
+            url_ += "CreationTime=" + encodeURIComponent(creationTime ? "" + creationTime.toJSON() : "") + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfPrizeWheelDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfPrizeWheelDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfPrizeWheelDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfPrizeWheelDto.fromJS(resultData200) : new PagedResultDtoOfPrizeWheelDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfPrizeWheelDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: CreatePrizeWheelDto | null | undefined): Observable<PrizeWheelDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheel/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<PrizeWheelDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelDto.fromJS(resultData200) : new PrizeWheelDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: PrizeWheelDto | null | undefined): Observable<PrizeWheelDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheel/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<PrizeWheelDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelDto.fromJS(resultData200) : new PrizeWheelDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheel/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class PrizeWheelGroupServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<PrizeWheelGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelGroup/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<PrizeWheelGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelGroupDto.fromJS(resultData200) : new PrizeWheelGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelGroupDto>(<any>null);
+    }
+
+    /**
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfPrizeWheelGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelGroup/GetAll?";
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfPrizeWheelGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfPrizeWheelGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfPrizeWheelGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfPrizeWheelGroupDto.fromJS(resultData200) : new PagedResultDtoOfPrizeWheelGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfPrizeWheelGroupDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: PrizeWheelGroupDto | null | undefined): Observable<PrizeWheelGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelGroup/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<PrizeWheelGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelGroupDto.fromJS(resultData200) : new PrizeWheelGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelGroupDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: PrizeWheelGroupDto | null | undefined): Observable<PrizeWheelGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelGroup/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<PrizeWheelGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelGroupDto.fromJS(resultData200) : new PrizeWheelGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelGroupDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelGroup/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
+export class PrizeWheelRateServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<PrizeWheelRateDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelRate/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelRateDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelRateDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<PrizeWheelRateDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelRateDto.fromJS(resultData200) : new PrizeWheelRateDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelRateDto>(<any>null);
+    }
+
+    /**
+     * @param sorting (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfPrizeWheelRateDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelRate/GetAll?";
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfPrizeWheelRateDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfPrizeWheelRateDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfPrizeWheelRateDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfPrizeWheelRateDto.fromJS(resultData200) : new PagedResultDtoOfPrizeWheelRateDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfPrizeWheelRateDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: PrizeWheelRateDto | null | undefined): Observable<PrizeWheelRateDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelRate/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelRateDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelRateDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<PrizeWheelRateDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelRateDto.fromJS(resultData200) : new PrizeWheelRateDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelRateDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: PrizeWheelRateDto | null | undefined): Observable<PrizeWheelRateDto> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelRate/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<PrizeWheelRateDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PrizeWheelRateDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<PrizeWheelRateDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PrizeWheelRateDto.fromJS(resultData200) : new PrizeWheelRateDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PrizeWheelRateDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PrizeWheelRate/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -2602,7 +3535,6 @@ export class ActivityDto implements IActivityDto {
     leftTag: ActivityDtoLeftTag | undefined;
     rightTag: ActivityDtoRightTag | undefined;
     type: ActivityDtoType | undefined;
-    isDeleted: boolean | undefined;
     startTime: moment.Moment | undefined;
     endTime: moment.Moment | undefined;
     creationTime: moment.Moment | undefined;
@@ -2625,7 +3557,6 @@ export class ActivityDto implements IActivityDto {
             this.leftTag = data["leftTag"];
             this.rightTag = data["rightTag"];
             this.type = data["type"];
-            this.isDeleted = data["isDeleted"];
             this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
             this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -2648,7 +3579,6 @@ export class ActivityDto implements IActivityDto {
         data["leftTag"] = this.leftTag;
         data["rightTag"] = this.rightTag;
         data["type"] = this.type;
-        data["isDeleted"] = this.isDeleted;
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -2671,7 +3601,6 @@ export interface IActivityDto {
     leftTag: ActivityDtoLeftTag | undefined;
     rightTag: ActivityDtoRightTag | undefined;
     type: ActivityDtoType | undefined;
-    isDeleted: boolean | undefined;
     startTime: moment.Moment | undefined;
     endTime: moment.Moment | undefined;
     creationTime: moment.Moment | undefined;
@@ -2804,11 +3733,15 @@ export interface ICreateActivityDto {
     endTime: moment.Moment;
 }
 
-export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResultDtoOfActivityDetailWhitItemNameDto {
-    totalCount: number | undefined;
-    items: ActivityDetailWhitItemNameDto[] | undefined;
+export class ActivityDetailDto implements IActivityDetailDto {
+    activityId: number | undefined;
+    threshold: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    amount: number | undefined;
+    id: number | undefined;
 
-    constructor(data?: IPagedResultDtoOfActivityDetailWhitItemNameDto) {
+    constructor(data?: IActivityDetailDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2819,44 +3752,48 @@ export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResu
 
     init(data?: any) {
         if (data) {
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(ActivityDetailWhitItemNameDto.fromJS(item));
-            }
+            this.activityId = data["activityId"];
+            this.threshold = data["threshold"];
+            this.itemType = data["itemType"];
+            this.itemId = data["itemId"];
+            this.amount = data["amount"];
+            this.id = data["id"];
         }
     }
 
-    static fromJS(data: any): PagedResultDtoOfActivityDetailWhitItemNameDto {
+    static fromJS(data: any): ActivityDetailDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
+        let result = new ActivityDetailDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
+        data["activityId"] = this.activityId;
+        data["threshold"] = this.threshold;
+        data["itemType"] = this.itemType;
+        data["itemId"] = this.itemId;
+        data["amount"] = this.amount;
+        data["id"] = this.id;
         return data; 
     }
 
-    clone(): PagedResultDtoOfActivityDetailWhitItemNameDto {
+    clone(): ActivityDetailDto {
         const json = this.toJSON();
-        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
+        let result = new ActivityDetailDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IPagedResultDtoOfActivityDetailWhitItemNameDto {
-    totalCount: number | undefined;
-    items: ActivityDetailWhitItemNameDto[] | undefined;
+export interface IActivityDetailDto {
+    activityId: number | undefined;
+    threshold: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    amount: number | undefined;
+    id: number | undefined;
 }
 
 export class ActivityDetailWhitItemNameDto implements IActivityDetailWhitItemNameDto {
@@ -2926,15 +3863,11 @@ export interface IActivityDetailWhitItemNameDto {
     id: number | undefined;
 }
 
-export class ActivityDetailDto implements IActivityDetailDto {
-    activityId: number | undefined;
-    threshold: number | undefined;
-    itemType: number | undefined;
-    itemId: number | undefined;
-    amount: number | undefined;
-    id: number | undefined;
+export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResultDtoOfActivityDetailWhitItemNameDto {
+    totalCount: number | undefined;
+    items: ActivityDetailWhitItemNameDto[] | undefined;
 
-    constructor(data?: IActivityDetailDto) {
+    constructor(data?: IPagedResultDtoOfActivityDetailWhitItemNameDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -2945,48 +3878,44 @@ export class ActivityDetailDto implements IActivityDetailDto {
 
     init(data?: any) {
         if (data) {
-            this.activityId = data["activityId"];
-            this.threshold = data["threshold"];
-            this.itemType = data["itemType"];
-            this.itemId = data["itemId"];
-            this.amount = data["amount"];
-            this.id = data["id"];
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(ActivityDetailWhitItemNameDto.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): ActivityDetailDto {
+    static fromJS(data: any): PagedResultDtoOfActivityDetailWhitItemNameDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ActivityDetailDto();
+        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["activityId"] = this.activityId;
-        data["threshold"] = this.threshold;
-        data["itemType"] = this.itemType;
-        data["itemId"] = this.itemId;
-        data["amount"] = this.amount;
-        data["id"] = this.id;
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
         return data; 
     }
 
-    clone(): ActivityDetailDto {
+    clone(): PagedResultDtoOfActivityDetailWhitItemNameDto {
         const json = this.toJSON();
-        let result = new ActivityDetailDto();
+        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IActivityDetailDto {
-    activityId: number | undefined;
-    threshold: number | undefined;
-    itemType: number | undefined;
-    itemId: number | undefined;
-    amount: number | undefined;
-    id: number | undefined;
+export interface IPagedResultDtoOfActivityDetailWhitItemNameDto {
+    totalCount: number | undefined;
+    items: ActivityDetailWhitItemNameDto[] | undefined;
 }
 
 export class ChangeUiThemeInput implements IChangeUiThemeInput {
@@ -3030,6 +3959,451 @@ export class ChangeUiThemeInput implements IChangeUiThemeInput {
 
 export interface IChangeUiThemeInput {
     theme: string;
+}
+
+export class PrizeWheelDto implements IPrizeWheelDto {
+    prizeWheelGroupId: number | undefined;
+    usedItemType: number | undefined;
+    usedItemId: number | undefined;
+    usedItemCount: number | undefined;
+    spinCount: number | undefined;
+    purchaseId: number | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+
+    constructor(data?: IPrizeWheelDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.prizeWheelGroupId = data["prizeWheelGroupId"];
+            this.usedItemType = data["usedItemType"];
+            this.usedItemId = data["usedItemId"];
+            this.usedItemCount = data["usedItemCount"];
+            this.spinCount = data["spinCount"];
+            this.purchaseId = data["purchaseId"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): PrizeWheelDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PrizeWheelDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["prizeWheelGroupId"] = this.prizeWheelGroupId;
+        data["usedItemType"] = this.usedItemType;
+        data["usedItemId"] = this.usedItemId;
+        data["usedItemCount"] = this.usedItemCount;
+        data["spinCount"] = this.spinCount;
+        data["purchaseId"] = this.purchaseId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): PrizeWheelDto {
+        const json = this.toJSON();
+        let result = new PrizeWheelDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPrizeWheelDto {
+    prizeWheelGroupId: number | undefined;
+    usedItemType: number | undefined;
+    usedItemId: number | undefined;
+    usedItemCount: number | undefined;
+    spinCount: number | undefined;
+    purchaseId: number | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfPrizeWheelDto implements IPagedResultDtoOfPrizeWheelDto {
+    totalCount: number | undefined;
+    items: PrizeWheelDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfPrizeWheelDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(PrizeWheelDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfPrizeWheelDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfPrizeWheelDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfPrizeWheelDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfPrizeWheelDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfPrizeWheelDto {
+    totalCount: number | undefined;
+    items: PrizeWheelDto[] | undefined;
+}
+
+export class CreatePrizeWheelDto implements ICreatePrizeWheelDto {
+    prizeWheelGroupId: number | undefined;
+    usedItemType: number | undefined;
+    usedItemId: number | undefined;
+    usedItemCount: number | undefined;
+    spinCount: number | undefined;
+    purchaseId: number | undefined;
+
+    constructor(data?: ICreatePrizeWheelDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.prizeWheelGroupId = data["prizeWheelGroupId"];
+            this.usedItemType = data["usedItemType"];
+            this.usedItemId = data["usedItemId"];
+            this.usedItemCount = data["usedItemCount"];
+            this.spinCount = data["spinCount"];
+            this.purchaseId = data["purchaseId"];
+        }
+    }
+
+    static fromJS(data: any): CreatePrizeWheelDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePrizeWheelDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["prizeWheelGroupId"] = this.prizeWheelGroupId;
+        data["usedItemType"] = this.usedItemType;
+        data["usedItemId"] = this.usedItemId;
+        data["usedItemCount"] = this.usedItemCount;
+        data["spinCount"] = this.spinCount;
+        data["purchaseId"] = this.purchaseId;
+        return data; 
+    }
+
+    clone(): CreatePrizeWheelDto {
+        const json = this.toJSON();
+        let result = new CreatePrizeWheelDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreatePrizeWheelDto {
+    prizeWheelGroupId: number | undefined;
+    usedItemType: number | undefined;
+    usedItemId: number | undefined;
+    usedItemCount: number | undefined;
+    spinCount: number | undefined;
+    purchaseId: number | undefined;
+}
+
+export class PrizeWheelGroupDto implements IPrizeWheelGroupDto {
+    activityId: number | undefined;
+    description: string | undefined;
+    freeTimer: number | undefined;
+    initialPool: number | undefined;
+    pool: number | undefined;
+    point: number | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+
+    constructor(data?: IPrizeWheelGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.activityId = data["activityId"];
+            this.description = data["description"];
+            this.freeTimer = data["freeTimer"];
+            this.initialPool = data["initialPool"];
+            this.pool = data["pool"];
+            this.point = data["point"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): PrizeWheelGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PrizeWheelGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activityId"] = this.activityId;
+        data["description"] = this.description;
+        data["freeTimer"] = this.freeTimer;
+        data["initialPool"] = this.initialPool;
+        data["pool"] = this.pool;
+        data["point"] = this.point;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): PrizeWheelGroupDto {
+        const json = this.toJSON();
+        let result = new PrizeWheelGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPrizeWheelGroupDto {
+    activityId: number | undefined;
+    description: string | undefined;
+    freeTimer: number | undefined;
+    initialPool: number | undefined;
+    pool: number | undefined;
+    point: number | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfPrizeWheelGroupDto implements IPagedResultDtoOfPrizeWheelGroupDto {
+    totalCount: number | undefined;
+    items: PrizeWheelGroupDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfPrizeWheelGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(PrizeWheelGroupDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfPrizeWheelGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfPrizeWheelGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfPrizeWheelGroupDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfPrizeWheelGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfPrizeWheelGroupDto {
+    totalCount: number | undefined;
+    items: PrizeWheelGroupDto[] | undefined;
+}
+
+export class PrizeWheelRateDto implements IPrizeWheelRateDto {
+    prizeWheelGroupId: number | undefined;
+    rate: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    itemAmount: number | undefined;
+    newTicker: number | undefined;
+    isDeleted: boolean | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+
+    constructor(data?: IPrizeWheelRateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.prizeWheelGroupId = data["prizeWheelGroupId"];
+            this.rate = data["rate"];
+            this.itemType = data["itemType"];
+            this.itemId = data["itemId"];
+            this.itemAmount = data["itemAmount"];
+            this.newTicker = data["newTicker"];
+            this.isDeleted = data["isDeleted"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): PrizeWheelRateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PrizeWheelRateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["prizeWheelGroupId"] = this.prizeWheelGroupId;
+        data["rate"] = this.rate;
+        data["itemType"] = this.itemType;
+        data["itemId"] = this.itemId;
+        data["itemAmount"] = this.itemAmount;
+        data["newTicker"] = this.newTicker;
+        data["isDeleted"] = this.isDeleted;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): PrizeWheelRateDto {
+        const json = this.toJSON();
+        let result = new PrizeWheelRateDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPrizeWheelRateDto {
+    prizeWheelGroupId: number | undefined;
+    rate: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    itemAmount: number | undefined;
+    newTicker: number | undefined;
+    isDeleted: boolean | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfPrizeWheelRateDto implements IPagedResultDtoOfPrizeWheelRateDto {
+    totalCount: number | undefined;
+    items: PrizeWheelRateDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfPrizeWheelRateDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(PrizeWheelRateDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfPrizeWheelRateDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfPrizeWheelRateDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfPrizeWheelRateDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfPrizeWheelRateDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfPrizeWheelRateDto {
+    totalCount: number | undefined;
+    items: PrizeWheelRateDto[] | undefined;
 }
 
 export class CreateRoleDto implements ICreateRoleDto {

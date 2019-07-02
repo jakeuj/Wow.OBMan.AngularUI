@@ -1,5 +1,5 @@
 import { Component, Injector } from '@angular/core';
-import {MatCheckboxChange, MatDialog} from '@angular/material';
+import {MatSlideToggleChange, MatDialog} from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
@@ -178,9 +178,8 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         });
     }
 
-    onActivityChange(activity: ActivityDto, $event: MatCheckboxChange) {
+    onActivityChange(activity: ActivityDto, $event: MatSlideToggleChange) {
         this.checkedActivityMap[activity.id] = $event.checked;
-        //this.notify.info(this.getCheckedActivity().toString());
     }
 
     getCheckedActivity(): number[] {
@@ -191,5 +190,25 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             }
         });
         return activity;
+    }
+
+    addCache(): void {
+        this.saving = true;
+        abp.message.confirm(
+            this.l('AddCacheWarningMessage'),
+            (result: boolean) => {
+                if (result) {
+                    this._activityServiceProxy
+                        .addCache()
+                        .pipe(
+                            finalize(() => {
+                                this.saving = false;
+                            })
+                        )
+                        .subscribe(() => {
+                            this.notify.info(this.l('AddCacheSuccessfully'));
+                        });
+                } else this.saving = false;
+            });
     }
 }

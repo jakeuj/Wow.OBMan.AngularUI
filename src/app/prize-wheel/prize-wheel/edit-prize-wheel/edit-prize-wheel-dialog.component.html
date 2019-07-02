@@ -1,0 +1,96 @@
+<form autocomplete="off" #editPrizeWheelModal="ngForm" (ngSubmit)="save()">
+    <h1 mat-dialog-title>{{ "EditPrizeWheel" | localize }}</h1>
+    <mat-dialog-content style="width:800px;height:300px;">
+        <mat-tab-group>
+            <mat-tab [label]="'PrizeWheel' | localize">
+                <br />
+                <div class="row-fluid">
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="PrizeWheelGroupId"
+                                    [placeholder]="'PrizeWheelGroupId' | localize"
+                                    [(ngModel)]="prizeWheel.prizeWheelGroupId"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="UsedItemType"
+                                    [placeholder]="'UsedItemType' | localize"
+                                    [(ngModel)]="prizeWheel.usedItemType"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="UsedItemId"
+                                    [placeholder]="'UsedItemId' | localize"
+                                    [(ngModel)]="prizeWheel.usedItemId"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="UsedItemCount"
+                                    [placeholder]="'UsedItemCount' | localize"
+                                    [(ngModel)]="prizeWheel.usedItemCount"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="SpinCount"
+                                    [placeholder]="'SpinCount' | localize"
+                                    [(ngModel)]="prizeWheel.spinCount"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input
+                                    matInput
+                                    name="PurchaseId"
+                                    [placeholder]="'PurchaseId' | localize"
+                                    [(ngModel)]="prizeWheel.purchaseId"
+                                    type="number"
+                                    required
+                                    maxlength="32"
+                            />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button
+                mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!editPrizeWheelModal.form.valid || saving"
+        >
+            {{ "Save" | localize }}
+        </button>
+    </div>
+</form>
