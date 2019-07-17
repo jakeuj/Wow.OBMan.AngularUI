@@ -11,7 +11,7 @@ import {
 } from '@shared/service-proxies/service-proxies';
 import { EditActivityDialogComponent } from "./edit-activity/edit-activity-dialog.component";
 import { CreateActivityDialogComponent } from "@app/activity/create-activity/create-activity-dialog.component";
-import * as moment from 'moment';
+import moment, { Moment }from 'moment';
 import * as _ from "lodash";
 
 class GetAllActivitiesInput extends PagedRequestDto {

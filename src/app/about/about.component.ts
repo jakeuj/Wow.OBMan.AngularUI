@@ -1,4 +1,4 @@
-import { Component, Injector, AfterViewInit } from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
@@ -7,7 +7,6 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
     animations: [appModuleAnimation()]
 })
 export class AboutComponent extends AppComponentBase {
-
     constructor(
         injector: Injector
     ) {

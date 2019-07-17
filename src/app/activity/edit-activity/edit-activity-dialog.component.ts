@@ -5,8 +5,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ActivityServiceProxy, ActivityDto, ActivityDtoLeftTag, ActivityDtoRightTag, ActivityDtoType}
     from '@shared/service-proxies/service-proxies';
-import * as moment from 'moment';
-import {Moment} from "@node_modules/moment";
+import moment, { Moment } from 'moment';
 
 @Component({
   selector: 'app-edit-activity',

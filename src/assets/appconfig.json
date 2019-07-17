@@ -1,7 +1,22 @@
 {
+  "title": "Sandbox",
+  "menuItems": [
+    {
+      "name": "Sandbox",
+      "route": "http://admin2.nlzm.huayang.fun:8081/"
+    },
+    {
+      "name": "Production",
+      "route": "http://admin2.nlzm.huayang.fun/"
+    },
+    {
+      "name": "Go",
+      "route": "http://ob-go-admin.tomatogame.cn/"
+    }
+  ],
   "remoteServiceBaseUrlLocal": "http://localhost:21021",
-  "remoteServiceBaseUrlRemote": "http://139.9.52.196:8080",
-  "remoteServiceBaseUrl": "http://localhost:21021",
+  "remoteServiceBaseUrlRemote": "http://admin2.nlzm.huayang.fun:9999/",
+  "remoteServiceBaseUrl": "http://admin2.nlzm.huayang.fun:9999/",
   "appBaseUrl": "http://localhost:4200",
   "localeMappings": [
     {

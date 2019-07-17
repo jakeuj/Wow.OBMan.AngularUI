@@ -5,8 +5,7 @@ import { AppComponentBase } from '@shared/app-component-base';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { ActivityServiceProxy, CreateActivityDto, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag}
 from '@shared/service-proxies/service-proxies';
-import {Moment} from "@node_modules/moment";
-import * as moment from 'moment';
+import moment, { Moment } from 'moment';
 @Component({
   selector: 'app-create-activity-dialog',
   templateUrl: './create-activity-dialog.component.html',

@@ -1,6 +1,7 @@
 import { Component, Injector, ViewEncapsulation } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { MenuItem } from '@shared/layout/menu-item';
+import appConfig from '../../assets/appconfig.json';
 
 @Component({
     templateUrl: './sidebar-nav.component.html',
@@ -8,7 +9,6 @@ import { MenuItem } from '@shared/layout/menu-item';
     encapsulation: ViewEncapsulation.None
 })
 export class SideBarNavComponent extends AppComponentBase {
-
     menuItems: MenuItem[] = [
         new MenuItem(this.l('HomePage'), '', 'home', '/app/home'),
         new MenuItem(this.l('Tenants'), 'Pages.Tenants', 'business', '/app/tenants'),
@@ -21,20 +21,20 @@ export class SideBarNavComponent extends AppComponentBase {
             new MenuItem(this.l('PrizeWheel'), 'Pages.Activity', '', '/app/prizeWheel' ),
             new MenuItem(this.l('PrizeWheelGroup'), 'Pages.Activity', '', '/app/prizeWheelGroup' ),
             new MenuItem(this.l('PrizeWheelRate'), 'Pages.Activity', '', '/app/prizeWheelRate' )])
-        ]),
-        new MenuItem(this.l('About'), '', 'menu', '', [
-            new MenuItem(this.l('ProductionAdmin'), '', '', 'http://admin.nlzm.huayang.fun/' ),
-            new MenuItem(this.l('TestAdmin'), '', '', 'http://admin.nlzm.huayang.fun:9999/' ),
-            new MenuItem(this.l('WowGame'), '', '', 'http://www.wowgame.com.tw/' ),
-            new MenuItem(this.l('ASP.NET Boilerplate'), '', '', '/app/about'),
-
-        ]),
+        ])
     ];
 
     constructor(
         injector: Injector
     ) {
         super(injector);
+        let abouts = appConfig.menuItems.map(x=>new MenuItem(this.l(x.name),"","",x.route));
+        if(abouts.length>0)
+        {
+            let about = new MenuItem(this.l('About'), '', 'menu', '', abouts);
+            this.menuItems.push(about);
+        }
+
     }
 
     showMenuItem(menuItem): boolean {
