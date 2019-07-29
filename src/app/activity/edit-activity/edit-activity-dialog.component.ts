@@ -3,9 +3,26 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from '@shared/app-component-base';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { ActivityServiceProxy, ActivityDto, ActivityDtoLeftTag, ActivityDtoRightTag, ActivityDtoType}
+import {
+    ActivityServiceProxy,
+    ActivityDto,
+    ActivityDtoLeftTag,
+    ActivityDtoRightTag,
+    ActivityDtoType
+}
     from '@shared/service-proxies/service-proxies';
 import moment, { Moment } from 'moment';
+
+export class IdAndServer
+{
+    id:number;
+    serverId:number;
+    constructor(id:number,serverId:number)
+    {
+        this.id=id;
+        this.serverId=serverId;
+    }
+}
 
 @Component({
   selector: 'app-edit-activity',
@@ -27,7 +44,7 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
         public _activityService: ActivityServiceProxy,
         private _dialogRef: MatDialogRef<EditActivityDialogComponent>,
         private _ngZone: NgZone,
-        @Optional() @Inject(MAT_DIALOG_DATA) private _id: number
+        @Optional() @Inject(MAT_DIALOG_DATA) private _idAndServer: IdAndServer
     ) {
         super(injector);
     }
@@ -36,7 +53,7 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
 
     ngOnInit(): void {
         this.dateTimeNow = moment();
-        this._activityService.get(this._id).subscribe(result => {
+        this._activityService.get(this._idAndServer.id,this._idAndServer.serverId).subscribe(result => {
             this.activity = result;
             let activityMessageArray = this.activity.message.match(/<t>(.+),<p>(.+)/);
             if(activityMessageArray && activityMessageArray.length==3)
@@ -53,7 +70,7 @@ export class EditActivityDialogComponent extends AppComponentBase implements OnI
         this.activity.message="<t>".concat(this.activityTitle,",<p>",this.activityMessage);
 
         this._activityService
-            .update(this.activity)
+            .update(this._idAndServer.id, this._idAndServer.serverId, this.activity)
             .pipe(
                 finalize(() => {
                     this.saving = false;

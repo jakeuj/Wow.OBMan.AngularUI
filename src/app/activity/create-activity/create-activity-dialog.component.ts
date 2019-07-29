@@ -1,5 +1,5 @@
-import { Component, Injector, OnInit, NgZone, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material';
+import {Component, Injector, OnInit, NgZone, ViewChild, Optional, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { AppComponentBase } from '@shared/app-component-base';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -22,14 +22,18 @@ export class CreateActivityDialogComponent extends AppComponentBase
     activityRightTags = ActivityDtoRightTag;
     activityTitle: string;
     activityMessage: string;
+    //server
+    //serverId:number=0;
 
     constructor(
         injector: Injector,
         public _activityService: ActivityServiceProxy,
         private _dialogRef: MatDialogRef<CreateActivityDialogComponent>,
         private _ngZone: NgZone,
+        @Optional() @Inject(MAT_DIALOG_DATA) private _serverId: number
     ) {
         super(injector);
+       //his.serverId=_serverId;
     }
 
     @ViewChild('autosize') autosize: CdkTextareaAutosize;
@@ -54,7 +58,7 @@ export class CreateActivityDialogComponent extends AppComponentBase
         this.activity.message="<t>".concat(this.activityTitle,",<p>",this.activityMessage);
 
         this._activityService
-            .create(this.activity)
+            .create(this._serverId,this.activity)
             .pipe(
                 finalize(() => {
                     this.saving = false;

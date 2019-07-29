@@ -11,8 +11,8 @@ import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
-
 import moment from 'moment';
+//import * as Moment from 'moment';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
@@ -152,11 +152,158 @@ export class ActivityServiceProxy {
     }
 
     /**
+     * @param id (optional)
+     * @param serverId (optional)
+     * @return Success
+     */
+    get(id: number | null | undefined, serverId: number | null | undefined): Observable<ActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/GetAsync?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        if (serverId !== undefined)
+            url_ += "serverId=" + encodeURIComponent("" + serverId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<ActivityDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDto>(<any>null);
+    }
+
+    /**
+     * @param serverId (optional)
+     * @param goToType (optional)
+     * @param goTo (optional)
+     * @param leftTag (optional)
+     * @param rightTag (optional)
+     * @param type (optional)
+     * @param startTime (optional)
+     * @param endTime (optional)
+     * @param creationTime (optional)
+     * @param sorting (optional)
+     * @param skipCount (optional)
+     * @param maxResultCount (optional)
+     * @return Success
+     */
+    getList(serverId: number | null | undefined, goToType: number | null | undefined, goTo: number | null | undefined, leftTag: LeftTag | null | undefined, rightTag: RightTag | null | undefined, type: Type | null | undefined, startTime: moment.Moment | null | undefined, endTime: moment.Moment | null | undefined, creationTime: moment.Moment | null | undefined, sorting: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfActivityDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/GetListAsync?";
+        if (serverId !== undefined)
+            url_ += "ServerId=" + encodeURIComponent("" + serverId) + "&";
+        if (goToType !== undefined)
+            url_ += "GoToType=" + encodeURIComponent("" + goToType) + "&";
+        if (goTo !== undefined)
+            url_ += "GoTo=" + encodeURIComponent("" + goTo) + "&";
+        if (leftTag !== undefined)
+            url_ += "LeftTag=" + encodeURIComponent("" + leftTag) + "&";
+        if (rightTag !== undefined)
+            url_ += "RightTag=" + encodeURIComponent("" + rightTag) + "&";
+        if (type !== undefined)
+            url_ += "Type=" + encodeURIComponent("" + type) + "&";
+        if (startTime !== undefined)
+            url_ += "StartTime=" + encodeURIComponent(startTime ? "" + startTime.toJSON() : "") + "&";
+        if (endTime !== undefined)
+            url_ += "EndTime=" + encodeURIComponent(endTime ? "" + endTime.toJSON() : "") + "&";
+        if (creationTime !== undefined)
+            url_ += "CreationTime=" + encodeURIComponent(creationTime ? "" + creationTime.toJSON() : "") + "&";
+        if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetList(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetList(response: HttpResponseBase): Observable<PagedResultDtoOfActivityDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfActivityDto.fromJS(resultData200) : new PagedResultDtoOfActivityDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfActivityDto>(<any>null);
+    }
+
+    /**
+     * @param serverId (optional)
      * @param input (optional)
      * @return Success
      */
-    mappingActivityByActivityId(input: MappingActivityByActivityIdInput | null | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/MappingActivityByActivityId";
+    create(serverId: number | null | undefined, input: CreateActivityDto | null | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/CreateAsync?";
+        if (serverId !== undefined)
+            url_ += "serverId=" + encodeURIComponent("" + serverId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(input);
@@ -167,24 +314,25 @@ export class ActivityServiceProxy {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             })
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMappingActivityByActivityId(response_);
+            return this.processCreate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processMappingActivityByActivityId(<any>response_);
+                    return this.processCreate(<any>response_);
                 } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
+                    return <Observable<number>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<void>><any>_observableThrow(response_);
+                return <Observable<number>><any>_observableThrow(response_);
         }));
     }
 
-    protected processMappingActivityByActivityId(response: HttpResponseBase): Observable<void> {
+    protected processCreate(response: HttpResponseBase): Observable<number> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -193,14 +341,136 @@ export class ActivityServiceProxy {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(<any>null);
+        return _observableOf<number>(<any>null);
+    }
+
+    /**
+     * @param id (optional)
+     * @param serverId (optional)
+     * @param input (optional)
+     * @return Success
+     */
+    update(id: number | null | undefined, serverId: number | null | undefined, input: ActivityDto | null | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/UpdateAsync?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        if (serverId !== undefined)
+            url_ += "serverId=" + encodeURIComponent("" + serverId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
+    }
+
+    /**
+     * @param id (optional)
+     * @param serverId (optional)
+     * @return Success
+     */
+    delete(id: number | null | undefined, serverId: number | null | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/DeleteAsync?";
+        if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        if (serverId !== undefined)
+            url_ += "serverId=" + encodeURIComponent("" + serverId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<boolean>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<boolean>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<boolean>(<any>null);
     }
 
     /**
@@ -253,303 +523,6 @@ export class ActivityServiceProxy {
         }
         return _observableOf<string>(<any>null);
     }
-
-    /**
-     * @param id (optional)
-     * @return Success
-     */
-    get(id: number | null | undefined): Observable<ActivityDto> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/Get?";
-        if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGet(<any>response_);
-                } catch (e) {
-                    return <Observable<ActivityDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ActivityDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGet(response: HttpResponseBase): Observable<ActivityDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ActivityDto>(<any>null);
-    }
-
-    /**
-     * @param goToType (optional)
-     * @param goTo (optional)
-     * @param leftTag (optional)
-     * @param rightTag (optional)
-     * @param type (optional)
-     * @param startTime (optional)
-     * @param endTime (optional)
-     * @param creationTime (optional)
-     * @param skipCount (optional)
-     * @param maxResultCount (optional)
-     * @return Success
-     */
-    getAll(goToType: number | null | undefined, goTo: number | null | undefined, leftTag: LeftTag | null | undefined, rightTag: RightTag | null | undefined, type: Type | null | undefined, startTime: moment.Moment | null | undefined, endTime: moment.Moment | null | undefined, creationTime: moment.Moment | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfActivityDto> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/GetAll?";
-        if (goToType !== undefined)
-            url_ += "GoToType=" + encodeURIComponent("" + goToType) + "&";
-        if (goTo !== undefined)
-            url_ += "GoTo=" + encodeURIComponent("" + goTo) + "&";
-        if (leftTag !== undefined)
-            url_ += "LeftTag=" + encodeURIComponent("" + leftTag) + "&";
-        if (rightTag !== undefined)
-            url_ += "RightTag=" + encodeURIComponent("" + rightTag) + "&";
-        if (type !== undefined)
-            url_ += "Type=" + encodeURIComponent("" + type) + "&";
-        if (startTime !== undefined)
-            url_ += "StartTime=" + encodeURIComponent(startTime ? "" + startTime.toJSON() : "") + "&";
-        if (endTime !== undefined)
-            url_ += "EndTime=" + encodeURIComponent(endTime ? "" + endTime.toJSON() : "") + "&";
-        if (creationTime !== undefined)
-            url_ += "CreationTime=" + encodeURIComponent(creationTime ? "" + creationTime.toJSON() : "") + "&";
-        if (skipCount !== undefined)
-            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
-        if (maxResultCount !== undefined)
-            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAll(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAll(<any>response_);
-                } catch (e) {
-                    return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<PagedResultDtoOfActivityDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfActivityDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? PagedResultDtoOfActivityDto.fromJS(resultData200) : new PagedResultDtoOfActivityDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<PagedResultDtoOfActivityDto>(<any>null);
-    }
-
-    /**
-     * @param input (optional)
-     * @return Success
-     */
-    create(input: CreateActivityDto | null | undefined): Observable<ActivityDto> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/Create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreate(<any>response_);
-                } catch (e) {
-                    return <Observable<ActivityDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ActivityDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processCreate(response: HttpResponseBase): Observable<ActivityDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ActivityDto>(<any>null);
-    }
-
-    /**
-     * @param input (optional)
-     * @return Success
-     */
-    update(input: ActivityDto | null | undefined): Observable<ActivityDto> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<ActivityDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ActivityDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<ActivityDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityDto.fromJS(resultData200) : new ActivityDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ActivityDto>(<any>null);
-    }
-
-    /**
-     * @param id (optional)
-     * @return Success
-     */
-    delete(id: number | null | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/Delete?";
-        if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDelete(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDelete(<any>response_);
-                } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<void>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processDelete(response: HttpResponseBase): Observable<void> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return _observableOf<void>(<any>null);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<void>(<any>null);
-    }
 }
 
 @Injectable()
@@ -561,62 +534,6 @@ export class ActivityDetailServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    /**
-     * @param input (optional)
-     * @return Success
-     */
-    create(input: ActivityDetailDto | null | undefined): Observable<ActivityDetailWhitItemNameDto> {
-        let url_ = this.baseUrl + "/api/services/app/ActivityDetail/Create";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCreate(<any>response_);
-                } catch (e) {
-                    return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processCreate(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityDetailWhitItemNameDto.fromJS(resultData200) : new ActivityDetailWhitItemNameDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ActivityDetailWhitItemNameDto>(<any>null);
     }
 
     /**
@@ -721,6 +638,62 @@ export class ActivityDetailServiceProxy {
     }
 
     protected processGet(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityDetailWhitItemNameDto.fromJS(resultData200) : new ActivityDetailWhitItemNameDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityDetailWhitItemNameDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional)
+     * @return Success
+     */
+    create(input: ActivityDetailDto | null | undefined): Observable<ActivityDetailWhitItemNameDto> {
+        let url_ = this.baseUrl + "/api/services/app/ActivityDetail/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityDetailWhitItemNameDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<ActivityDetailWhitItemNameDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3477,58 +3450,8 @@ export interface IRegisterOutput {
     canLogin: boolean | undefined;
 }
 
-export class MappingActivityByActivityIdInput implements IMappingActivityByActivityIdInput {
-    activityId: number[] | undefined;
-
-    constructor(data?: IMappingActivityByActivityIdInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            if (data["activityId"] && data["activityId"].constructor === Array) {
-                this.activityId = [] as any;
-                for (let item of data["activityId"])
-                    this.activityId.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): MappingActivityByActivityIdInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new MappingActivityByActivityIdInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (this.activityId && this.activityId.constructor === Array) {
-            data["activityId"] = [];
-            for (let item of this.activityId)
-                data["activityId"].push(item);
-        }
-        return data;
-    }
-
-    clone(): MappingActivityByActivityIdInput {
-        const json = this.toJSON();
-        let result = new MappingActivityByActivityIdInput();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IMappingActivityByActivityIdInput {
-    activityId: number[] | undefined;
-}
-
 export class ActivityDto implements IActivityDto {
+    id: number | undefined;
     message: string | undefined;
     goToType: number | undefined;
     goTo: number | undefined;
@@ -3538,7 +3461,6 @@ export class ActivityDto implements IActivityDto {
     startTime: moment.Moment | undefined;
     endTime: moment.Moment | undefined;
     creationTime: moment.Moment | undefined;
-    id: number | undefined;
 
     constructor(data?: IActivityDto) {
         if (data) {
@@ -3551,6 +3473,7 @@ export class ActivityDto implements IActivityDto {
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.message = data["message"];
             this.goToType = data["goToType"];
             this.goTo = data["goTo"];
@@ -3560,7 +3483,6 @@ export class ActivityDto implements IActivityDto {
             this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
             this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.id = data["id"];
         }
     }
 
@@ -3573,6 +3495,7 @@ export class ActivityDto implements IActivityDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["message"] = this.message;
         data["goToType"] = this.goToType;
         data["goTo"] = this.goTo;
@@ -3582,7 +3505,6 @@ export class ActivityDto implements IActivityDto {
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["id"] = this.id;
         return data;
     }
 
@@ -3595,6 +3517,7 @@ export class ActivityDto implements IActivityDto {
 }
 
 export interface IActivityDto {
+    id: number | undefined;
     message: string | undefined;
     goToType: number | undefined;
     goTo: number | undefined;
@@ -3604,7 +3527,6 @@ export interface IActivityDto {
     startTime: moment.Moment | undefined;
     endTime: moment.Moment | undefined;
     creationTime: moment.Moment | undefined;
-    id: number | undefined;
 }
 
 export class PagedResultDtoOfActivityDto implements IPagedResultDtoOfActivityDto {
@@ -3669,8 +3591,8 @@ export class CreateActivityDto implements ICreateActivityDto {
     leftTag: CreateActivityDtoLeftTag | undefined;
     rightTag: CreateActivityDtoRightTag | undefined;
     type: CreateActivityDtoType | undefined;
-    startTime: moment.Moment;
-    endTime: moment.Moment;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
 
     constructor(data?: ICreateActivityDto) {
         if (data) {
@@ -3729,19 +3651,15 @@ export interface ICreateActivityDto {
     leftTag: CreateActivityDtoLeftTag | undefined;
     rightTag: CreateActivityDtoRightTag | undefined;
     type: CreateActivityDtoType | undefined;
-    startTime: moment.Moment;
-    endTime: moment.Moment;
+    startTime: moment.Moment | undefined;
+    endTime: moment.Moment | undefined;
 }
 
-export class ActivityDetailDto implements IActivityDetailDto {
-    activityId: number | undefined;
-    threshold: number | undefined;
-    itemType: number | undefined;
-    itemId: number | undefined;
-    amount: number | undefined;
-    id: number | undefined;
+export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResultDtoOfActivityDetailWhitItemNameDto {
+    totalCount: number | undefined;
+    items: ActivityDetailWhitItemNameDto[] | undefined;
 
-    constructor(data?: IActivityDetailDto) {
+    constructor(data?: IPagedResultDtoOfActivityDetailWhitItemNameDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3752,48 +3670,44 @@ export class ActivityDetailDto implements IActivityDetailDto {
 
     init(data?: any) {
         if (data) {
-            this.activityId = data["activityId"];
-            this.threshold = data["threshold"];
-            this.itemType = data["itemType"];
-            this.itemId = data["itemId"];
-            this.amount = data["amount"];
-            this.id = data["id"];
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(ActivityDetailWhitItemNameDto.fromJS(item));
+            }
         }
     }
 
-    static fromJS(data: any): ActivityDetailDto {
+    static fromJS(data: any): PagedResultDtoOfActivityDetailWhitItemNameDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ActivityDetailDto();
+        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["activityId"] = this.activityId;
-        data["threshold"] = this.threshold;
-        data["itemType"] = this.itemType;
-        data["itemId"] = this.itemId;
-        data["amount"] = this.amount;
-        data["id"] = this.id;
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
         return data;
     }
 
-    clone(): ActivityDetailDto {
+    clone(): PagedResultDtoOfActivityDetailWhitItemNameDto {
         const json = this.toJSON();
-        let result = new ActivityDetailDto();
+        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IActivityDetailDto {
-    activityId: number | undefined;
-    threshold: number | undefined;
-    itemType: number | undefined;
-    itemId: number | undefined;
-    amount: number | undefined;
-    id: number | undefined;
+export interface IPagedResultDtoOfActivityDetailWhitItemNameDto {
+    totalCount: number | undefined;
+    items: ActivityDetailWhitItemNameDto[] | undefined;
 }
 
 export class ActivityDetailWhitItemNameDto implements IActivityDetailWhitItemNameDto {
@@ -3863,11 +3777,15 @@ export interface IActivityDetailWhitItemNameDto {
     id: number | undefined;
 }
 
-export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResultDtoOfActivityDetailWhitItemNameDto {
-    totalCount: number | undefined;
-    items: ActivityDetailWhitItemNameDto[] | undefined;
+export class ActivityDetailDto implements IActivityDetailDto {
+    activityId: number | undefined;
+    threshold: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    amount: number | undefined;
+    id: number | undefined;
 
-    constructor(data?: IPagedResultDtoOfActivityDetailWhitItemNameDto) {
+    constructor(data?: IActivityDetailDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3878,44 +3796,48 @@ export class PagedResultDtoOfActivityDetailWhitItemNameDto implements IPagedResu
 
     init(data?: any) {
         if (data) {
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(ActivityDetailWhitItemNameDto.fromJS(item));
-            }
+            this.activityId = data["activityId"];
+            this.threshold = data["threshold"];
+            this.itemType = data["itemType"];
+            this.itemId = data["itemId"];
+            this.amount = data["amount"];
+            this.id = data["id"];
         }
     }
 
-    static fromJS(data: any): PagedResultDtoOfActivityDetailWhitItemNameDto {
+    static fromJS(data: any): ActivityDetailDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
+        let result = new ActivityDetailDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
+        data["activityId"] = this.activityId;
+        data["threshold"] = this.threshold;
+        data["itemType"] = this.itemType;
+        data["itemId"] = this.itemId;
+        data["amount"] = this.amount;
+        data["id"] = this.id;
         return data;
     }
 
-    clone(): PagedResultDtoOfActivityDetailWhitItemNameDto {
+    clone(): ActivityDetailDto {
         const json = this.toJSON();
-        let result = new PagedResultDtoOfActivityDetailWhitItemNameDto();
+        let result = new ActivityDetailDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IPagedResultDtoOfActivityDetailWhitItemNameDto {
-    totalCount: number | undefined;
-    items: ActivityDetailWhitItemNameDto[] | undefined;
+export interface IActivityDetailDto {
+    activityId: number | undefined;
+    threshold: number | undefined;
+    itemType: number | undefined;
+    itemId: number | undefined;
+    amount: number | undefined;
+    id: number | undefined;
 }
 
 export class ChangeUiThemeInput implements IChangeUiThemeInput {

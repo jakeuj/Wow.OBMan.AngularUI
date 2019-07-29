@@ -14,9 +14,14 @@
       "route": "http://ob-go-admin.tomatogame.cn/"
     }
   ],
+  "serverList": [
+    {"id": 0,"name": "Sandbox"},
+    {"id": 1,"name": "Production"},
+    {"id": 2,"name": "Go"}
+  ],
   "remoteServiceBaseUrlLocal": "http://localhost:21021",
   "remoteServiceBaseUrlRemote": "http://admin2.nlzm.huayang.fun:9999/",
-  "remoteServiceBaseUrl": "http://admin2.nlzm.huayang.fun:9999/",
+  "remoteServiceBaseUrl": "http://localhost:21021",
   "appBaseUrl": "http://localhost:4200",
   "localeMappings": [
     {

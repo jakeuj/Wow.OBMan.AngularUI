@@ -7,14 +7,16 @@ import {
     ActivityServiceProxy,
     ActivityDto,
     PagedResultDtoOfActivityDto,
-    LeftTag, RightTag, Type, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag, MappingActivityByActivityIdInput
+    LeftTag, RightTag, Type, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag
 } from '@shared/service-proxies/service-proxies';
-import { EditActivityDialogComponent } from "./edit-activity/edit-activity-dialog.component";
+import {EditActivityDialogComponent, IdAndServer} from "./edit-activity/edit-activity-dialog.component";
 import { CreateActivityDialogComponent } from "@app/activity/create-activity/create-activity-dialog.component";
 import moment, { Moment }from 'moment';
 import * as _ from "lodash";
+import {PagedAndSortedRequestDto} from "@shared/paged-sorted-listing-component-base";
+import appConfig from '../../assets/appconfig.json';
 
-class GetAllActivitiesInput extends PagedRequestDto {
+class GetAllActivitiesInput extends PagedAndSortedRequestDto {
     goToType: number | null | undefined;
     goTo: number | null | undefined;
     leftTag: LeftTag | null | undefined;
@@ -24,6 +26,19 @@ class GetAllActivitiesInput extends PagedRequestDto {
     endTime: moment.Moment | null | undefined;
     creationTime: moment.Moment | null | undefined;
 }
+
+class ServerInfo
+{
+    id:number;
+    name:string;
+    constructor(id:number,name:string)
+    {
+        this.id=id;
+        this.name=name;
+    }
+}
+
+
 
 @Component({
     selector: 'app-activity',
@@ -49,6 +64,9 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     public saving = false;
     // for mapping
     checkedActivityMap: { [key: number]: boolean } = {};
+    //server
+    serverId:number=0;
+    servers:ServerInfo[] = [];
 
     constructor(
         injector: Injector,
@@ -56,6 +74,11 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         private _dialog: MatDialog
     ) {
         super(injector);
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+        this.servers = appConfig.serverList.map(x=>new ServerInfo(x.id,x.name));
     }
 
     createActivity(): void {
@@ -80,9 +103,10 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         request.startTime = this.startTime==null?undefined:this.startTime;
         request.endTime = this.endTime==null?undefined:this.endTime;
         request.creationTime = this.creationTime==null?undefined:this.creationTime;
+        //request.sorting="ActivityId DESC, Threshold ASC";
 
         this._activityServiceProxy
-            .getAll(request.goToType,request.goTo,request.leftTag,request.rightTag,request.type,request.startTime,request.endTime,request.creationTime, request.skipCount, request.maxResultCount)
+            .getList(this.serverId,request.goToType,request.goTo,request.leftTag,request.rightTag,request.type,request.startTime,request.endTime,request.creationTime, request.sorting, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();
@@ -99,7 +123,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             this.l('UserDeleteWarningMessage', activity.id),
             (result: boolean) => {
                 if (result) {
-                    this._activityServiceProxy.delete(activity.id).subscribe(() => {
+                    this._activityServiceProxy.delete(activity.id,this.serverId).subscribe(() => {
                         abp.notify.success(this.l('SuccessfullyDeleted'));
                         this.refresh();
                     });
@@ -129,6 +153,8 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         );
     }
     */
+
+    /*
     mapping(): void {
         this.saving = true;
         let activitySelected = this.getCheckedActivity();
@@ -159,15 +185,16 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                 } else this.saving=false;
             }
         );
-    }
+    }*/
 
     private showCreateOrEditActivityDialog(id?: number): void {
         let createOrEditActivityDialog;
         if (id === undefined || id <= 0) {
-            createOrEditActivityDialog = this._dialog.open(CreateActivityDialogComponent);
+            createOrEditActivityDialog = this._dialog.open(CreateActivityDialogComponent, {
+                data: this.serverId});
         } else {
             createOrEditActivityDialog = this._dialog.open(EditActivityDialogComponent, {
-                data: id
+                data: new IdAndServer(id,this.serverId)
             });
         }
 
