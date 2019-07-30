@@ -2,7 +2,7 @@ import { Component, Injector } from '@angular/core';
 import {MatSlideToggleChange, MatDialog} from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PagedListingComponentBase, PagedRequestDto } from 'shared/paged-listing-component-base';
+import { PagedListingComponentBase } from 'shared/paged-listing-component-base';
 import {
     ActivityServiceProxy,
     ActivityDto,
@@ -65,7 +65,8 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     // for mapping
     checkedActivityMap: { [key: number]: boolean } = {};
     //server
-    serverId:number=0;
+    serverId:number;
+    currServerId:number;
     servers:ServerInfo[] = [];
 
     constructor(
@@ -74,11 +75,13 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         private _dialog: MatDialog
     ) {
         super(injector);
+        this.serverId=0;
+        this.servers = appConfig.serverList.map(x=>new ServerInfo(x.id,x.name));
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.servers = appConfig.serverList.map(x=>new ServerInfo(x.id,x.name));
+
     }
 
     createActivity(): void {
@@ -115,6 +118,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             .subscribe((result: PagedResultDtoOfActivityDto) => {
                 this.activities = result.items;
                 this.showPaging(result, pageNumber);
+                this.currServerId=this.serverId;
             });
     }
 
@@ -237,5 +241,10 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                         });
                 } else this.saving = false;
             });
+    }
+
+    private getCurrentServerName():string
+    {
+        return this.servers.find(x=>x.id===this.currServerId).name;
     }
 }

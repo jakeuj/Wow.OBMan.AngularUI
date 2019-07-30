@@ -30,7 +30,7 @@
                 <div class="row clearfix">
                     <form>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <mat-form-field>
                                     <mat-select
                                             name="ServerId"
@@ -43,7 +43,10 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div class="col-md-6 text-right p-r-25">
+                            <div class="col-md-4 text-center">
+                                <p>Current Server is {{getCurrentServerName()}}</p>
+                            </div>
+                            <div class="col-md-4 text-right p-r-25">
                                 <button mat-raised-button color="primary" (click)="getDataPage(1)">{{ 'Search' | localize }}</button>
                             </div>
                         </div>
@@ -79,7 +82,6 @@
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-
                                     </div>
                                     <div class="col-md-3">
                                         <mat-form-field>
@@ -95,7 +97,6 @@
                                             />
                                             <owl-date-time #dt1></owl-date-time>
                                         </mat-form-field>
-
                                     </div>
                                     <div class="col-md-3">
                                         <mat-form-field>
