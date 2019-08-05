@@ -22,8 +22,6 @@ export class CreateActivityDialogComponent extends AppComponentBase
     activityRightTags = ActivityDtoRightTag;
     activityTitle: string;
     activityMessage: string;
-    //server
-    //serverId:number=0;
 
     constructor(
         injector: Injector,
@@ -33,7 +31,6 @@ export class CreateActivityDialogComponent extends AppComponentBase
         @Optional() @Inject(MAT_DIALOG_DATA) private _serverId: number
     ) {
         super(injector);
-       //his.serverId=_serverId;
     }
 
     @ViewChild('autosize') autosize: CdkTextareaAutosize;

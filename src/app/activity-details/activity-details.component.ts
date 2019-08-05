@@ -54,7 +54,7 @@ export class ActivityDetailsComponent extends PagedSortedListingComponentBase<Ac
         request.sorting="ActivityId DESC, Threshold ASC";
 
         this._activityServiceProxy
-            .getAll(request.activityId,request.itemType,request.itemId,request.sorting, request.skipCount, request.maxResultCount)
+            .getList(request.activityId,request.itemType,request.itemId,this.selectedServerId,request.sorting, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();
@@ -63,6 +63,7 @@ export class ActivityDetailsComponent extends PagedSortedListingComponentBase<Ac
             .subscribe((result: PagedResultDtoOfActivityDetailWhitItemNameDto) => {
                 this.activityDetails = result.items;
                 this.showPaging(result, pageNumber);
+                this.currServerId=this.selectedServerId;
             });
     }
 
@@ -71,7 +72,7 @@ export class ActivityDetailsComponent extends PagedSortedListingComponentBase<Ac
             this.l('UserDeleteWarningMessage', activity.id),
             (result: boolean) => {
                 if (result) {
-                    this._activityServiceProxy.delete(activity.id).subscribe(() => {
+                    this._activityServiceProxy.delete(activity.id,this.currServerId).subscribe(() => {
                         abp.notify.success(this.l('SuccessfullyDeleted'));
                         this.refresh();
                     });

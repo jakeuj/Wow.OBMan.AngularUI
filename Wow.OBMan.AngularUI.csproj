@@ -39,4 +39,7 @@
     <TypeScriptCompile Include="src\app\prize-wheel\prize-wheel\prize-wheel.component.ts" />
     <TypeScriptCompile Include="src\shared\paged-sorted-listing-component-base.ts" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\shared\server" />
+  </ItemGroup>
 </Project>

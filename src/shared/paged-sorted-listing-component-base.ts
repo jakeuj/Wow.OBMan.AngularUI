@@ -1,5 +1,7 @@
 import { AppComponentBase } from 'shared/app-component-base';
 import { Injector, OnInit } from '@angular/core';
+import {ServerInfo} from "@shared/server/server-id";
+import appConfig from "../assets/appconfig.json";
 
 export class PagedResultDto {
     items: any[];
@@ -24,8 +26,18 @@ export abstract class PagedSortedListingComponentBase<TEntityDto> extends AppCom
     public totalItems: number;
     public isTableLoading = false;
 
+    // add for server
+    public selectedServerId:number;
+    public currServerId:number;
+    public servers:ServerInfo[] = [];
+
     constructor(injector: Injector) {
         super(injector);
+
+        // add for server
+        this.selectedServerId=1;
+        this.currServerId=this.selectedServerId;
+        this.servers = appConfig.serverList.map(x=>new ServerInfo(x.id,x.name));
     }
 
     ngOnInit(): void {
@@ -56,4 +68,10 @@ export abstract class PagedSortedListingComponentBase<TEntityDto> extends AppCom
 
     protected abstract list(request: PagedAndSortedRequestDto, pageNumber: number, finishedCallback: Function): void;
     protected abstract delete(entity: TEntityDto): void;
+
+    // add for server
+    public getCurrentServerName():string
+    {
+        return this.currServerId + ' : ' + this.servers.find(x=>x.id===this.currServerId).name;
+    }
 }

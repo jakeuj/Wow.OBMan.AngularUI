@@ -1,7 +1,7 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, Inject, Injector, OnInit, Optional} from '@angular/core';
 import {AppComponentBase} from "@shared/app-component-base";
 import {PrizeWheelRateDto, PrizeWheelRateServiceProxy} from "@shared/service-proxies/service-proxies";
-import {MatDialogRef} from "@node_modules/@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@node_modules/@angular/material";
 import {finalize} from "@node_modules/rxjs/internal/operators";
 
 @Component({
@@ -18,6 +18,7 @@ export class CreatePrizeWheelRateDialogComponent extends AppComponentBase
         injector: Injector,
         public _prizeWheelService: PrizeWheelRateServiceProxy,
         private _dialogRef: MatDialogRef<CreatePrizeWheelRateDialogComponent>,
+        @Optional() @Inject(MAT_DIALOG_DATA) private _serverId: number
     ) {
         super(injector);
     }
@@ -29,7 +30,7 @@ export class CreatePrizeWheelRateDialogComponent extends AppComponentBase
         this.saving = true;
 
         this._prizeWheelService
-            .create(this.prizeWheelRate)
+            .create(this._serverId,this.prizeWheelRate)
             .pipe(
                 finalize(() => {
                     this.saving = false;

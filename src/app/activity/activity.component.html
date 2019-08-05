@@ -13,7 +13,7 @@
                                 <mat-icon>refresh</mat-icon>
                                 <span>{{ "Refresh" | localize }}</span>
                             </button>
-                            <button mat-menu-item [disabled]="saving" (click)="addCache()">
+                            <button mat-menu-item [disabled]="saving" (click)="mapping()">
                                 <mat-icon>mapping</mat-icon>
                                 <span>{{ "Mapping" | localize }}</span>
                             </button>
@@ -26,33 +26,44 @@
                 </ul>
             </div>
             <div class="body table-responsive">
-                <!--query start-->
+                <!--server list start-->
                 <div class="row clearfix">
                     <form>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <mat-form-field>
                                     <mat-select
                                             name="ServerId"
                                             [placeholder]="'ServerId' | localize"
-                                            [(ngModel)]="serverId">
-                                        <mat-option>---</mat-option>
+                                            [(ngModel)]="selectedServerId">
+                                        <mat-option *ngFor="let sid of servers" [value]="sid.id">
+                                            {{ sid.id + ' : ' + sid.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <p>Current Server is {{getCurrentServerName()}}</p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <mat-form-field>
+                                    <mat-select
+                                            name="MappingServerId"
+                                            [placeholder]="'MappingServerId' | localize"
+                                            [(ngModel)]="targetServerIds" multiple>
                                         <mat-option *ngFor="let sid of servers" [value]="sid.id">
                                             {{ sid.name }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div class="col-md-4 text-center">
-                                <p>Current Server is {{getCurrentServerName()}}</p>
-                            </div>
-                            <div class="col-md-4 text-right p-r-25">
+                            <div class="col-md-3 text-right p-r-25">
                                 <button mat-raised-button color="primary" (click)="getDataPage(1)">{{ 'Search' | localize }}</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <!--query end-->
+                <!--server list end-->
                 <!--query start-->
                 <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
                     <mat-expansion-panel-header>

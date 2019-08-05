@@ -18,7 +18,7 @@ import * as ApiServiceProxies from './service-proxies';
         ApiServiceProxies.PrizeWheelServiceProxy,
         ApiServiceProxies.PrizeWheelGroupServiceProxy,
         ApiServiceProxies.PrizeWheelRateServiceProxy,
-
+        ApiServiceProxies.RedisServiceProxy,
         { provide: HTTP_INTERCEPTORS, useClass: AbpHttpInterceptor, multi: true }
     ]
 })

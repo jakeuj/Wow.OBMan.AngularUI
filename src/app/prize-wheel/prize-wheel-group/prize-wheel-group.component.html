@@ -18,6 +18,33 @@
                 </ul>
             </div>
             <div class="body table-responsive">
+                <!--server list start-->
+                <div class="row clearfix">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <mat-form-field>
+                                    <mat-select
+                                            name="ServerId"
+                                            [placeholder]="'ServerId' | localize"
+                                            [(ngModel)]="selectedServerId">
+                                        <mat-option>---</mat-option>
+                                        <mat-option *ngFor="let sid of servers" [value]="sid.id">
+                                            {{ sid.name }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <p>Current Server is {{getCurrentServerName()}}</p>
+                            </div>
+                            <div class="col-md-4 text-right p-r-25">
+                                <button mat-raised-button color="primary" (click)="getDataPage(1)">{{ 'Search' | localize }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--server list end-->
                 <!--query start-->
                 <!--query end-->
                 <table class="table table-hover table-striped" [busy]="isTableLoading">

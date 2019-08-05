@@ -1,7 +1,7 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, Inject, Injector, OnInit, Optional} from '@angular/core';
 import {AppComponentBase} from "@shared/app-component-base";
 import {ActivityDetailDto, ActivityDetailServiceProxy} from "@shared/service-proxies/service-proxies";
-import {MatDialogRef} from "@node_modules/@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@node_modules/@angular/material";
 import {finalize} from "@node_modules/rxjs/internal/operators";
 
 @Component({
@@ -18,6 +18,7 @@ export class CreateActivityDetailDialogComponent extends AppComponentBase
         injector: Injector,
         public _activityService: ActivityDetailServiceProxy,
         private _dialogRef: MatDialogRef<CreateActivityDetailDialogComponent>,
+        @Optional() @Inject(MAT_DIALOG_DATA) private _serverId: number
     ) {
         super(injector);
     }
@@ -29,7 +30,7 @@ export class CreateActivityDetailDialogComponent extends AppComponentBase
         this.saving = true;
 
         this._activityService
-            .create(this.activity)
+            .create(this._serverId,this.activity)
             .pipe(
                 finalize(() => {
                     this.saving = false;

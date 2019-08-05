@@ -2,19 +2,28 @@ import { Component, Injector } from '@angular/core';
 import {MatSlideToggleChange, MatDialog} from '@angular/material';
 import { finalize } from 'rxjs/operators';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { PagedListingComponentBase } from 'shared/paged-listing-component-base';
 import {
     ActivityServiceProxy,
     ActivityDto,
     PagedResultDtoOfActivityDto,
-    LeftTag, RightTag, Type, ActivityDtoType, ActivityDtoLeftTag, ActivityDtoRightTag
+    LeftTag,
+    RightTag,
+    Type,
+    ActivityDtoType,
+    ActivityDtoLeftTag,
+    ActivityDtoRightTag,
+    RedisServiceProxy,
+    MappingActivityInput
 } from '@shared/service-proxies/service-proxies';
-import {EditActivityDialogComponent, IdAndServer} from "./edit-activity/edit-activity-dialog.component";
-import { CreateActivityDialogComponent } from "@app/activity/create-activity/create-activity-dialog.component";
-import moment, { Moment }from 'moment';
+import {EditActivityDialogComponent} from "./edit-activity/edit-activity-dialog.component";
+import moment from 'moment';
 import * as _ from "lodash";
-import {PagedAndSortedRequestDto} from "@shared/paged-sorted-listing-component-base";
-import appConfig from '../../assets/appconfig.json';
+import {
+    PagedAndSortedRequestDto,
+    PagedSortedListingComponentBase
+} from "@shared/paged-sorted-listing-component-base";
+import {IdAndServer} from "@shared/server/server-id";
+import {CreateActivityDialogComponent} from "./create-activity/create-activity-dialog.component";
 
 class GetAllActivitiesInput extends PagedAndSortedRequestDto {
     goToType: number | null | undefined;
@@ -27,27 +36,14 @@ class GetAllActivitiesInput extends PagedAndSortedRequestDto {
     creationTime: moment.Moment | null | undefined;
 }
 
-class ServerInfo
-{
-    id:number;
-    name:string;
-    constructor(id:number,name:string)
-    {
-        this.id=id;
-        this.name=name;
-    }
-}
-
-
-
 @Component({
     selector: 'app-activity',
     templateUrl: './activity.component.html',
     animations: [appModuleAnimation()],
     styleUrls: ['./activity.component.css']
 })
-export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
-    activities: ActivityDto[] = [];
+export class ActivityComponent extends PagedSortedListingComponentBase<ActivityDto> {
+    public activities: ActivityDto[] = [];
     goToType: number | null | undefined;
     goTo: number | null | undefined;
     leftTag: LeftTag | null | undefined;
@@ -65,23 +61,15 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
     // for mapping
     checkedActivityMap: { [key: number]: boolean } = {};
     //server
-    serverId:number;
-    currServerId:number;
-    servers:ServerInfo[] = [];
+    targetServerIds:number[];
 
     constructor(
         injector: Injector,
         private _activityServiceProxy: ActivityServiceProxy,
+        private _redisServiceProxy: RedisServiceProxy,
         private _dialog: MatDialog
     ) {
         super(injector);
-        this.serverId=0;
-        this.servers = appConfig.serverList.map(x=>new ServerInfo(x.id,x.name));
-    }
-
-    ngOnInit(): void {
-        super.ngOnInit();
-
     }
 
     createActivity(): void {
@@ -106,10 +94,10 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
         request.startTime = this.startTime==null?undefined:this.startTime;
         request.endTime = this.endTime==null?undefined:this.endTime;
         request.creationTime = this.creationTime==null?undefined:this.creationTime;
-        //request.sorting="ActivityId DESC, Threshold ASC";
+        request.sorting="ActivityId DESC, Threshold ASC";
 
         this._activityServiceProxy
-            .getList(this.serverId,request.goToType,request.goTo,request.leftTag,request.rightTag,request.type,request.startTime,request.endTime,request.creationTime, request.sorting, request.skipCount, request.maxResultCount)
+            .getList(request.goToType,request.goTo,request.leftTag,request.rightTag,request.type,request.startTime,request.endTime,request.creationTime,this.selectedServerId, request.sorting, request.skipCount, request.maxResultCount)
             .pipe(
                 finalize(() => {
                     finishedCallback();
@@ -118,7 +106,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             .subscribe((result: PagedResultDtoOfActivityDto) => {
                 this.activities = result.items;
                 this.showPaging(result, pageNumber);
-                this.currServerId=this.serverId;
+                this.currServerId=this.selectedServerId;
             });
     }
 
@@ -127,7 +115,7 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             this.l('UserDeleteWarningMessage', activity.id),
             (result: boolean) => {
                 if (result) {
-                    this._activityServiceProxy.delete(activity.id,this.serverId).subscribe(() => {
+                    this._activityServiceProxy.delete(activity.id,this.currServerId).subscribe(() => {
                         abp.notify.success(this.l('SuccessfullyDeleted'));
                         this.refresh();
                     });
@@ -135,15 +123,33 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             }
         );
     }
-    /*
-    mappingAll(): void {
+
+    public mapping(): void {
         this.saving = true;
+        let activitySelected = this.getCheckedActivity();
+        if(activitySelected.length==0) {
+            this.notify.info(this.l('NoSelectedActivityWarningMessage'));
+            this.saving=false;
+            return;
+        }
+        if(this.targetServerIds.find(x=>x==this.currServerId)) {
+            this.notify.info(this.l('TargetContainOriginServerId'));
+            this.saving=false;
+            return;
+        }
         abp.message.confirm(
-            this.l('ActivityMappingWarningMessage'),
+            this.l('ActivityMappingWarningMessage') + '\r\nFrom S' +this.currServerId + ' to ' + this.targetServerIds.toString() + '\r\nId:' + activitySelected.toString(),
             (result: boolean) => {
                 if (result) {
+
+                    // input
+                    let input:MappingActivityInput = new MappingActivityInput();
+                    input.activityIds=activitySelected;
+                    input.serverId=this.currServerId;
+                    input.targetServerIds=this.targetServerIds;
+
                     this._activityServiceProxy
-                        .mappingActivity()
+                        .mapping(input)
                         .pipe(
                             finalize(() => {
                                 this.saving = false;
@@ -156,49 +162,15 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             }
         );
     }
-    */
-
-    /*
-    mapping(): void {
-        this.saving = true;
-        let activitySelected = this.getCheckedActivity();
-        if(activitySelected.length==0) {
-            this.notify.info(this.l('NoSelectedActivityWarningMessage'));
-            this.saving=false;
-            return;
-        }
-        abp.message.confirm(
-            this.l('ActivityMappingWarningMessage') + '\r\n' + activitySelected.toString(),
-            (result: boolean) => {
-                if (result) {
-
-                    // input
-                    let input:MappingActivityByActivityIdInput = new MappingActivityByActivityIdInput();
-                    input.activityId=activitySelected;
-
-                    this._activityServiceProxy
-                        .mappingActivityByActivityId(input)
-                        .pipe(
-                            finalize(() => {
-                                this.saving = false;
-                            })
-                        )
-                        .subscribe(() => {
-                            this.notify.info(this.l('MappedSuccessfully'));
-                        });
-                } else this.saving=false;
-            }
-        );
-    }*/
 
     private showCreateOrEditActivityDialog(id?: number): void {
         let createOrEditActivityDialog;
         if (id === undefined || id <= 0) {
             createOrEditActivityDialog = this._dialog.open(CreateActivityDialogComponent, {
-                data: this.serverId});
+                data: this.currServerId});
         } else {
             createOrEditActivityDialog = this._dialog.open(EditActivityDialogComponent, {
-                data: new IdAndServer(id,this.serverId)
+                data: new IdAndServer(id,this.currServerId)
             });
         }
 
@@ -229,8 +201,8 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
             this.l('AddCacheWarningMessage'),
             (result: boolean) => {
                 if (result) {
-                    this._activityServiceProxy
-                        .addCache()
+                    this._redisServiceProxy
+                        .addCache(this.currServerId)
                         .pipe(
                             finalize(() => {
                                 this.saving = false;
@@ -241,10 +213,5 @@ export class ActivityComponent extends PagedListingComponentBase<ActivityDto> {
                         });
                 } else this.saving = false;
             });
-    }
-
-    private getCurrentServerName():string
-    {
-        return this.servers.find(x=>x.id===this.currServerId).name;
     }
 }

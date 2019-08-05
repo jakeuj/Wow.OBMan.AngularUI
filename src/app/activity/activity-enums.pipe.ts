@@ -13,6 +13,8 @@ export class ActivityEnumsPipe implements PipeTransform {
           case 'CreateActivityDtoType':
           case 'ActivityDtoType':
               switch (value) {
+                  case 0:
+                      return "NONE";
                   case 1:
                       return "PURCHASE";
                   case 2:
@@ -23,6 +25,20 @@ export class ActivityEnumsPipe implements PipeTransform {
                       return "UNDRESS";
                   case 5:
                       return "TinyGame";
+                  case 6:
+                      return "Brand";
+                  case 7:
+                      return "Lottery";
+                  case 8:
+                      return "LeaderBoard";
+                  case 9:
+                      return "PiggyBank";
+                  case 10:
+                      return "Invest";
+                  case 11:
+                      return "BattlePass";
+                  case 12:
+                      return "Slot";
               }
               break;
           case 'CreateActivityDtoLeftTag':
@@ -53,6 +69,8 @@ export class ActivityEnumsPipe implements PipeTransform {
               break;
           case 'ItemType':
               switch (value) {
+                  case 0:
+                      return "NONE";
                   case 1:
                       return "FreeDiamond";
                   case 2:
@@ -73,6 +91,8 @@ export class ActivityEnumsPipe implements PipeTransform {
                       return "MonthCard";
                   case 10:
                       return "UndressEnergy";
+                  case 11:
+                      return "PrizeWheelCoin";
                   case 99:
                       return "DMMPoint";
               }

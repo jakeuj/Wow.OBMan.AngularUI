@@ -3,6 +3,7 @@ import {AppComponentBase} from "@shared/app-component-base";
 import {PrizeWheelRateDto, PrizeWheelRateServiceProxy} from "@shared/service-proxies/service-proxies";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@node_modules/@angular/material";
 import {finalize} from "@node_modules/rxjs/internal/operators";
+import {IdAndServer} from "@shared/server/server-id";
 
 @Component({
   selector: 'app-edit-prize-wheel-rate-dialog',
@@ -17,13 +18,13 @@ export class EditPrizeWheelRateDialogComponent extends AppComponentBase implemen
         injector: Injector,
         public _prizeWheelService: PrizeWheelRateServiceProxy,
         private _dialogRef: MatDialogRef<EditPrizeWheelRateDialogComponent>,
-        @Optional() @Inject(MAT_DIALOG_DATA) private _id: number
+        @Optional() @Inject(MAT_DIALOG_DATA) private _idAndServer: IdAndServer
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
-        this._prizeWheelService.get(this._id).subscribe(result => {
+        this._prizeWheelService.get(this._idAndServer.id,this._idAndServer.serverId).subscribe(result => {
             this.prizeWheelRate = result;
         });
     }
@@ -32,7 +33,7 @@ export class EditPrizeWheelRateDialogComponent extends AppComponentBase implemen
         this.saving = true;
 
         this._prizeWheelService
-            .update(this.prizeWheelRate)
+            .update(this._idAndServer.id, this._idAndServer.serverId,this.prizeWheelRate)
             .pipe(
                 finalize(() => {
                     this.saving = false;

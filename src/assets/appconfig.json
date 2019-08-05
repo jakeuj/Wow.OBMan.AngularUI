@@ -1,5 +1,5 @@
 {
-  "title": "Sandbox",
+  "title": "OBMan",
   "menuItems": [
     {
       "name": "Sandbox",
@@ -15,9 +15,10 @@
     }
   ],
   "serverList": [
-    {"id": 0,"name": "Sandbox"},
-    {"id": 1,"name": "Production"},
-    {"id": 2,"name": "Go"}
+    {"id": 1,"name": "Server1"},
+    {"id": 2,"name": "Server2"},
+    {"id": 3,"name": "Server3"},
+    {"id": 4,"name": "Server4"}
   ],
   "remoteServiceBaseUrlLocal": "http://localhost:21021",
   "remoteServiceBaseUrlRemote": "http://admin2.nlzm.huayang.fun:9999/",

@@ -12,17 +12,7 @@ import {
 }
     from '@shared/service-proxies/service-proxies';
 import moment, { Moment } from 'moment';
-
-export class IdAndServer
-{
-    id:number;
-    serverId:number;
-    constructor(id:number,serverId:number)
-    {
-        this.id=id;
-        this.serverId=serverId;
-    }
-}
+import {IdAndServer} from "@shared/server/server-id";
 
 @Component({
   selector: 'app-edit-activity',
